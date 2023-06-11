@@ -1,0 +1,74 @@
+﻿@*@model chosen.Models.Commodity*@
+
+@model chosen.Models.TempStoragesViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Commodity</h4>
+<hr />
+
+<p>一番賞名稱: @Model.PrizeName</p>
+<p>暫存倉中的數量: @Model.PrizeQuantity</p>
+<p>截止日期: @Model.Commodity.Deadline</p>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Commodity.CommodityId" />
+            <div class="form-group">
+                <label asp-for="Commodity.TempStorageId" class="control-label"></label>
+                <input asp-for="Commodity.TempStorageId" class="form-control" />
+                <span asp-validation-for="Commodity.TempStorageId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Commodity.MemberId" class="control-label"></label>
+                <input asp-for="Commodity.MemberId" class="form-control" />
+                <span asp-validation-for="MemberId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Commodity.CommodityName" class="control-label"></label>
+                <input asp-for="Commodity.CommodityName" class="form-control" />
+                <span asp-validation-for="Commodity.CommodityName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Commodity.CommodityQuantity" class="control-label"></label>
+                <input asp-for="Commodity.CommodityQuantity" class="form-control" />
+                <span asp-validation-for="Commodity.CommodityQuantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Commodity.CommodityUnitPrice" class="control-label"></label>
+                <input asp-for="Commodity.CommodityUnitPrice" class="form-control" />
+                <span asp-validation-for="Commodity.CommodityUnitPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Commodity.Deadline" class="control-label"></label>
+                <input asp-for="Commodity.Deadline" class="form-control" />
+                <span asp-validation-for="Commodity.Deadline" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Commodity.OnShelves" class="control-label"></label>
+                <input asp-for="Commodity.OnShelves" class="form-control" />
+                <span asp-validation-for="Commodity.OnShelves" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        
+    </script>
+}

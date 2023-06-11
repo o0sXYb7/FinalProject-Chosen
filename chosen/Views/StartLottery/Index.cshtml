@@ -1,0 +1,614 @@
+﻿@section Styles{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.css" integrity="sha512-wR4oNhLBHf7smjy0K4oqzdWumd+r5/+6QO/vDda76MW5iug4PT7v86FoEkySIJft3XA0Ae6axhIvHrqwm793Nw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.css" integrity="sha512-6lLUdeQ5uheMFbWm3CP271l14RsX1xtx+J5x2yeIDkkiBpeVTNhTqijME7GgRKKi6hCqovwCoBTlRBEC20M8Mg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        .tag {
+            background-color: #e53637;
+            color: white;
+            margin-right: 5px;
+            padding: 5px 8px;
+            border-radius: 5px;
+        }
+
+        .tag-secondary {
+            display: flex;
+            margin-bottom: 5px;
+        }
+
+        .tag-secondary span:nth-child(1) {
+            background-color: black;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px 0 0 8px;
+        }
+
+        .tag-secondary span:nth-child(2) {
+            background-color: darkorange;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .text-cancel {
+            text-decoration: line-through;
+            color: darkgray;
+        }
+
+        .table tfoot td:nth-child(1) {
+            border-radius: 0 0 0 20px;
+        }
+
+        .table tfoot td:nth-child(2) {
+            border-radius: 0 0 20px 0;
+        }
+        .ibon{
+            width:110px;
+            height:70px;
+            background-color:black;
+            margin-right:5px;
+            margin-bottom:5px;
+            background-image: url('@Url.Content("~/img/sign-paper-back.png")');
+            background-size:contain;
+            background-repeat:no-repeat;
+            position:relative;
+        }
+
+        .ibon:hover{
+            background-color: red;
+        }
+
+        .opened{
+            background-image: url('@Url.Content("~/img/sign-paper-open.png")');
+            cursor:not-allowed;
+        }     
+
+        .opened:hover {
+            background-color: black;
+        }
+
+        .ibon span{
+            position:absolute;
+            top:3px;
+            right:5px;
+            font-size:.5rem;
+        }
+
+        .selected{
+            background-color: red;
+        }
+
+        .start-open {
+            width: 90%;
+            padding-bottom: 90%;
+            margin: 0 auto;
+        }
+
+        .start-open-back {
+            background: url(@Url.Content("~/img/start-lottery-back.png"));
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+
+        .start-open-font {
+            background: url(@Url.Content("~/img/start-lottery-font.png"));
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+
+        .start-open img{
+            position:absolute;
+            left:50%;
+            transform:translateX(-50%);
+            top:30px;
+            width:500px;
+        }
+
+        .start-open h4{
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 75px;
+            width: 80%;
+        }
+
+        @@media(max-width:1200px){
+            .start-open img {
+                width: 400px;
+            }
+        }
+
+        @@media(max-width:767px) {
+            .start-open img {
+                width: 300px;
+            }
+        }
+
+        @@media(max-width:550px) {
+            .start-open img {
+                width: 200px;
+            }
+
+            .start-open h4 {
+                position: absolute;
+                width: 80%;
+                font-size:1rem;
+            }
+        }
+
+        @@media(max-width:414px) {
+            .start-open h4 {
+                width: 80%;
+                bottom: 30px;
+            }
+        }
+
+    </style>
+}
+
+<div id="app">
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-8 mx-lg-auto">
+                <template v-for="item in RawardData">
+                    <div class="mb-2 d-flex">
+                        <span class="tag">{{item.Series}}</span>
+                        <span class="tag">{{item.FactoryName}}</span>
+                    </div>
+                    <h4 class="mb-3">{{item.Name}}</h4>
+                    <div class="mb-4 d-flex flex-wrap">
+                        <div class="mr-3 tag-secondary">
+                            <span>一抽價</span>
+                            <span>NT${{item.OneDrawMoney}}</span>
+                        </div>
+                        <div class="mr-3 tag-secondary">
+                            <span>運費</span>
+                            <span>NT${{item.Fare}}</span>
+                        </div>
+                    </div>
+                </template>
+                <template v-if="NowShowView == ''">                   
+                    <div class="mb-4" v-if="SumOfLaveNum >0">
+                        <button class="btn btn-danger btn-lg mr-3" @@click="startLottery">抽獎</button>
+                        <button class="btn btn-danger btn-lg mr-3" @@click="startAllLottery">剩餘全包</button>
+                    </div>
+                    <div class="d-flex flex-wrap mb-4">
+                        <button class="ibon btn text-white" :disabled="hasOpen(item)" :class="{opened:hasOpen(item)}" @@click="selectNum(item,$event)" :key="item" v-for="(item,index) in SumOfNum">
+                            <span>{{item}}</span>
+                            </button>
+                    </div>
+                    <div class="mb-4">
+                        <table class="table bg-white">
+                            <thead class="bg-dark text-white">
+                                <tr>
+                                    <th class="w-75">獎項</th>
+                                    <th class="w-25 text-center">餘量/總量</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template v-for="item in RawardItemsDetail">
+                                    <tr>
+                                        <td :class="{'text-cancel': item.LaveNum == 0}">{{item.RawardLevel}}  {{item.Name}}</td>
+                                        <td :class="{'text-cancel': item.LaveNum == 0,'text-center': true}">{{item.LaveNum}}/{{item.Num}}</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                            <tfoot class="bg-secondary text-white">
+                                <tr>
+                                    <td>合計</td>
+                                    <td class="text-center">{{SumOfLaveNum}}/{{SumOfNum}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="mb-4">
+                        <button class="btn btn-danger btn-lg" @@click="goBack">返回抽獎</button>
+                    </div>
+                    <div class="d-flex flex-wrap mb-4">
+                        <button class="ibon btn text-white" @@click="updateImage(index)" :key="item" v-for="(item,index) in ReturnNumList">
+                            <span>{{item}}</span>
+                        </button>
+                    </div>
+                    <div class="mb-4">
+                        <h4 class="fw-bolder text-center">點擊上列籤紙後，獎品將會顯示於下</h4>
+                        <div class="text-center">
+                            <i class="fa-solid fa-circle-arrow-down fa-xl" style="color: #e01f1f;"></i>
+                        </div>
+                    </div>
+                    <div class="mb-4 d-flex" id="openCard">
+                        <div class="front">
+                            <div class="start-open start-open-back"></div>
+                        </div>
+                        <div class="back">
+                            <div class="start-open start-open-font">
+                                <img :src="NowImage" />
+                                <h4 class="text-center">{{NowName}}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.js" integrity="sha512-WNZwVebQjhSxEzwbettGuQgWxbpYdoLf7mH+25A7sfQbbxKeS5SQ9QBf97zOY4nOlwtksgDA/czSTmfj4DUEiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.rawgit.com/nnattawat/flip/master/dist/jquery.flip.min.js"></script>
+    <script>
+        let vueApp = {
+            data() {
+                return {
+                    RawardData: [],
+                    RawardItemsDetail: [],
+                    HasSelectNumList:[],
+                    ImageList: [],
+                    SumOfLaveNum: 0,
+                    SumOfNum: 0,
+                    NowSelectNum:[],
+                    // 抽獎回傳內容
+                    ReturnMsg:'',
+                    ReturnImgList:[],
+                    ReturnNameList: [],
+                    ReturnNumList: [],
+                    // 目前畫面該呈現哪個
+                    NowShowView:'',
+                    // 翻開後的內容
+                    NowImage:'',
+                    NowName:'',
+                    // 目前是正反哪面
+                    NowOpen:false,
+                }
+            },
+            methods: {
+                getData() {
+                    let _this = this;
+                    let id = window.location.pathname.split('/').pop();
+                    this.clearData();
+
+                    axios.get(`/StartLottery/getShowRawards/${id}`)
+                        .then((res) => {
+                            //console.log(res.data);
+                            _this.RawardData = res.data;
+                            _this.ImageList.push(res.data[0].Image)
+                            if (res.data[0].HasSelectNumber != "") {
+                                _this.HasSelectNumList = res.data[0].HasSelectNumber.split(",").filter(function (value) {
+                                    return value !== "";
+                                }); 
+                                //console.log("Yes")
+                            }
+                            axios.get(`/StartLottery/getShowRawardsItems/${id}`)
+                                .then((res) => {
+                                    //console.log(res.data)
+                                    _this.RawardItemsDetail = res.data;
+                                    for (let item of res.data) {
+                                        _this.ImageList.push(item.Image)
+                                        _this.SumOfLaveNum += item.LaveNum;
+                                        _this.SumOfNum += item.Num;
+                                    }
+                                    //$("#openCard").flip({
+                                    //    trigger: 'manual',
+                                    //});
+                                })
+                                .then(() =>{
+                                    // 获取会员数据/顯示點數
+                                    $.ajax({
+                                        url: '/Payment/GetMemberData',
+                                        type: 'GET',
+                                        success: function (data) {
+                                            $('#memberId').text(data.memberId);
+                                            $('#memberPoint').text(data.memberPoint);
+                                        },
+                                        error: function (error) {
+                                            console.error('發生錯誤:', error);
+                                        }
+                                    });
+                                })
+                        })
+                },
+                clearData() {
+                    this.RawardData = [];
+                    this.RawardItemsDetail = [];
+                    this.ImageList = [];
+                    this.SumOfLaveNum = 0;
+                    this.SumOfNum = 0;
+                    this.NowSelectNum = [];
+                    this.ReturnMsg = '';
+                    this.ReturnImgList = [];
+                    this.ReturnNumList = [];
+                    this.ReturnNameList = [];
+                    this.NowShowView = '';
+                    this.NowImage = '';
+                    this.NowName = '';
+                    this.NowOpen = false;
+                },
+                createImage(img) {
+                    return `https://finalprojectbackend.azurewebsites.net/img/webDataPicture\/${img}`
+                },
+                selectNum(num,event){
+                    let _this = this;
+                    let isOpen = $(event.target).hasClass('opened')
+                    if (!isOpen) {
+                        $(event.target).toggleClass("selected")
+                        let hasInList = _this.NowSelectNum.indexOf(num);
+                        if (hasInList == -1) {
+                            _this.NowSelectNum.push(num)
+                        }else{
+                            _this.NowSelectNum.splice(hasInList,1)
+                        }
+                    }else{
+                        return
+                    }
+                },
+                startLottery(){
+                    let _this = this;
+                    let id = window.location.pathname.split('/').pop();
+                    let required = {
+                        MemberId:0,
+                        PrizePoolId:id,
+                        NumList: _this.NowSelectNum,
+                    }
+                    // 提示客戶購買多少號碼
+                    let num = 0;
+                    let textMsg = `<span>目前選擇號碼為:<span><br><span>`;
+                    for (let item of _this.NowSelectNum) {
+                        textMsg += item;
+                        num++;
+                        if (num < _this.NowSelectNum.length) {
+                            textMsg+= ',';
+                        }                      
+                    }
+                    textMsg += `</sapn><br><span>共${num}個號碼</span>`;
+
+                    if (num != 0) {
+                        Swal.fire({
+                            title: "購買確認!",
+                            html: textMsg,
+                            showCancelButton: true,
+                            cancelButtonColor: '#abbac3',
+                            confirmButtonColor: '#d15b47',
+                            confirmButtonText: '確認',
+                            cancelButtonText:"取消",
+                            input: 'checkbox',
+                            inputValue: 1,
+                            inputPlaceholder:
+                                '已同意購買選擇之號碼，並同意先行扣除運費',
+                            inputValidator: (result) => {
+                                return !result && '需同意購買規則!'
+                            }
+                        })
+                            .then((res) => {
+                                if (res.isConfirmed) {
+                                    axios.post(`/StartLottery/startLottery/`, required)
+                                        .then((res) => {
+                                            console.log(res.data)
+                                            if (res.data.ReturnMsg == 'fail') {
+                                                Swal.fire({
+                                                    title: "請先登入",
+                                                    icon: "warning",
+                                                    confirmButtonText: '確認',
+                                                })
+                                            } else if (res.data.ReturnMsg == 'noMoney') {
+                                                Swal.fire({
+                                                    title: "餘額不足!",
+                                                    icon: "warning",
+                                                    confirmButtonText: '確認',
+                                                })
+                                            }else{
+                                                _this.ReturnMsg = res.data.ReturnMsg;
+                                                _this.ReturnImgList = res.data.ImgList;
+                                                _this.ReturnNumList = res.data.NumList;
+                                                _this.ReturnNameList = res.data.NameList;
+                                                if (res.data.ImgList != null) {
+                                                    Swal.fire({
+                                                        title: "購買成功，稍後將跳轉至抽獎頁面!",
+                                                        icon: "success",
+                                                        showConfirmButton: false,
+                                                        timer: 1500,
+                                                    })
+                                                        .then((res) => {
+                                                            _this.NowShowView = 'return';
+                                                        })
+                                                        .then((res) => {
+                                                            $("#openCard").flip({
+                                                                trigger: 'manual',
+                                                            });
+                                                        })
+                                                        .then(() => {
+                                                            // 获取会员数据/顯示點數
+                                                            $.ajax({
+                                                                url: '/Payment/GetMemberData',
+                                                                type: 'GET',
+                                                                success: function (data) {
+                                                                    $('#memberId').text(data.memberId);
+                                                                    $('#memberPoint').text(data.memberPoint);
+                                                                },
+                                                                error: function (error) {
+                                                                    console.error('發生錯誤:', error);
+                                                                }
+                                                            });
+                                                        })
+                                                }                                           
+                                            }
+                                        })
+                                }
+                            });
+                    }else{
+                        Swal.fire({
+                            title: "請選擇號碼!",
+                            icon: "warning",
+                            confirmButtonText: '確認',
+                        })
+                    }
+                },
+                startAllLottery(){
+                    let _this = this;
+                    let id = window.location.pathname.split('/').pop();
+                    // 處理 NowSelectNum，強制將內容改成目前剩餘未選之號碼
+                    let allList = [];
+                    for (let i = 1; i <= _this.SumOfNum;i++) {
+                        allList.push(i);
+                    }
+                    for (let i = 0; i < _this.HasSelectNumList.length;i++) {
+                        let index = allList.indexOf(parseInt(_this.HasSelectNumList[i]));
+                        allList.splice(index,1);
+                    }
+
+                    _this.NowSelectNum = allList;
+
+                    let required = {
+                        MemberId: 1,
+                        PrizePoolId: id,
+                        NumList: _this.NowSelectNum,
+                    }
+                    // 提示客戶購買多少號碼
+                    let num = 0;
+                    let textMsg = `<span>目前選擇號碼為:<span><br><span>`;
+                    for (let item of _this.NowSelectNum) {
+                        textMsg += item;
+                        num++;
+                        if (num < _this.NowSelectNum.length) {
+                            textMsg += ',';
+                        }
+                    }
+                    textMsg += `</sapn><br><span>共${num}個號碼</span>`;
+
+                    if (num != 0) {
+                        Swal.fire({
+                            title: "購買確認!",
+                            html: textMsg,
+                            showCancelButton: true,
+                            cancelButtonColor: '#abbac3',
+                            confirmButtonColor: '#d15b47',
+                            confirmButtonText: '確認',
+                            cancelButtonText: "取消",
+                            input: 'checkbox',
+                            inputValue: 1,
+                            inputPlaceholder:
+                                '已同意購買選擇之號碼，並同意先行扣除運費',
+                            inputValidator: (result) => {
+                                return !result && '需同意購買規則!'
+                            }
+                        })
+                            .then((res) => {
+                                if (res.isConfirmed) {
+                                    axios.post(`/StartLottery/startLottery/`, required)
+                                        .then((res) => {
+                                            console.log(res.data)
+                                            if (res.data.ReturnMsg == 'fail') {
+                                                Swal.fire({
+                                                    title: "請先登入",
+                                                    icon: "warning",
+                                                    confirmButtonText: '確認',
+                                                })
+                                                _this.clearSelectBox();
+                                            } else if (res.data.ReturnMsg == 'noMoney') {
+                                                Swal.fire({
+                                                    title: "餘額不足!",
+                                                    icon: "warning",
+                                                    confirmButtonText: '確認',
+                                                })
+                                                _this.clearSelectBox();
+                                            } else{
+                                                _this.ReturnMsg = res.data.ReturnMsg;
+                                                _this.ReturnImgList = res.data.ImgList;
+                                                _this.ReturnNumList = res.data.NumList;
+                                                _this.ReturnNameList = res.data.NameList;
+                                                if (res.data.ImgList != null) {
+                                                    Swal.fire({
+                                                        title: "購買成功，稍後將跳轉至抽獎頁面!",
+                                                        icon: "success",
+                                                        showConfirmButton: false,
+                                                        timer: 1500,
+                                                    })
+                                                        .then((res) => {
+                                                            _this.NowShowView = 'return';
+                                                        })
+                                                        .then((res) => {
+                                                            $("#openCard").flip({
+                                                                trigger: 'manual',
+                                                            });
+                                                        })
+                                                }                                          
+                                            }
+                                        })
+                                }else{
+                                    _this.clearSelectBox();
+                                }
+                            });
+                    }
+                },
+                hasOpen(index){
+                    let _this = this;
+                    if (_this.HasSelectNumList.indexOf(index+'') == -1) {
+                        return false;
+                    }else{
+                        return true;
+                    }
+                },
+                goBack(){
+                    Swal.fire({
+                        title: "您確定要返回?",
+                        icon: "question",
+                        cancelButtonColor: '#abbac3',
+                        confirmButtonColor: '#d15b47',
+                        confirmButtonText: '確認',
+                        cancelButtonText: "取消",
+                        showCancelButton: true,
+                    })
+                        .then((res)=>{
+                            if (res.isConfirmed) {
+                                this.NowShowView = '';
+                                this.getData();                                               
+                            }
+                        })
+                },
+                updateImage(index){
+                    let _this = this;
+                    if (!_this.NowOpen) {
+                        _this.NowOpen = true;
+                        $("#openCard").flip(true);
+                        _this.NowImage = `https://finalprojectbackend.azurewebsites.net/img/webDataPicture/${_this.ReturnImgList[index]}`;
+                        _this.NowName = `恭喜獲得${_this.ReturnNameList[index]}`;
+                        $("#openCard").off(".flip");
+                        setTimeout(function(){
+                            $("#openCard").flip({
+                                trigger: 'manual',
+                            });
+                        }, 500);
+                    }else{
+                        $("#openCard").flip(false);
+                        $("#openCard").off(".flip");
+                        setTimeout(function () {
+                            setTimeout(function (){
+                                _this.NowImage = `https://finalprojectbackend.azurewebsites.net/img/webDataPicture/${_this.ReturnImgList[index]}`;
+                                _this.NowName = `恭喜獲得${_this.ReturnNameList[index]}`;                                
+                                $("#openCard").flip({
+                                    trigger: 'manual',
+                                    speed: 500,
+                                });
+                                $("#openCard").flip(true);
+                            }, 500)
+                        }, 500);
+                    }
+                },
+                clearSelectBox(){
+                    this.NowSelectNum = [];
+                    $(".ibon").removeClass('selected');
+                },
+            },
+            mounted() {
+                this.getData();
+            },
+        }
+
+
+        let app = Vue.createApp(vueApp).mount("#app");
+    </script>
+}

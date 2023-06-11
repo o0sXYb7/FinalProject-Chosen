@@ -1,0 +1,26 @@
+[
+  {
+    "outputFileName": "wwwroot/js/tableJq.min.js",
+    "inputFiles": [
+      "wwwroot/js/tableJq.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/dataTable2.min.js",
+    "inputFiles": [
+      "wwwroot/js/dataTable2.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/rawardLibs.min.js",
+    "inputFiles": [
+      "wwwroot/js/rawardLibs.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ]
+  }
+]

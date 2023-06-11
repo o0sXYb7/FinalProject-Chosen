@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    @* <link> 標籤引用的是DataTables的CSS樣式表，用於設置表格的外觀風格，例如表格邊框、文字顏色、背景色等等。*@      
+    <link href="~/css/breakingnews.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css" rel="stylesheet" />
+    <style>
+        /* 設定 DataTable 的主題 */
+        .dataTables_wrapper {
+            /*background-color: #f9f9f9;*/
+            /* border: 1px solid #ddd;*/
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+            /* 設定表格樣式 */
+            .dataTables_wrapper table {
+                border-collapse: collapse;
+                border-spacing: 0;
+                width: 100%;
+            }
+
+            .dataTables_wrapper th,
+            .dataTables_wrapper td {
+                padding: 12px 15px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .dataTables_wrapper th {
+                display: none;
+            }
+        
+
+        
+
+        h2 {
+            padding: 0.3cm;
+        }
+
+      
+        .td-image {
+            width: 36%;
+           
+        }
+
+        .td-description {
+            width: 45%;
+        }
+
+        .td-time {
+            width: 19%;
+        }
+    
+
+    </style>
+
+    @section Scripts{
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script src="~/js/breakingnews_index.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                var storedPageIndex = sessionStorage.getItem('NowPageIndex');
+
+                var table = $('table').DataTable({
+                    lengthChange: false, // 隱藏顯示筆數
+                    pageLength: 5, // 設置顯示筆數
+                    ordering: false, // 隱藏升降冪
+
+                    columns: [
+                        { "data": "圖片", "width": "40%" },
+                        { "data": "標題", "width": "40%" },
+                        { "data": "時間", "width": "20%" },
+                    ],
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/zh-HANT.json'
+                    },
+
+                    // 刷新時設定起始位置
+                                //displayStart 的值是從 0 開始的，所以如果你的每頁顯示筆數為 5，而 NowPageIndex 是從 1 開始的，因此需要將 NowPageIndex 減去 1 並乘以 5 來計算 displayStart 的值。
+                                //根據 sessionStorage 中的 NowPageIndex 設定 DataTable 的當前頁面，從而在刷新時恢復到正確的頁面。
+                                displayStart: storedPageIndex ? (storedPageIndex - 1) * 5 : 0,
+                  
+                    drawCallback: function () {
+                        // 當點擊 DataTable 中的內容時觸發
+                        $('table').on('click', 'tr', function () {
+                            var rowData = table.row(this).data();
+                            
+                            if (rowData) {
+                                var currentPageIndex = table.page.info().page + 1;
+                                sessionStorage.setItem('NowPageIndex', currentPageIndex);
+                            }
+                        });                  
+                    }                             
+                });
+                // DataTable 換頁事件
+                table.on('page.dt', function () {
+                    var currentPageIndex = table.page.info().page + 1;
+                    sessionStorage.setItem('NowPageIndex', currentPageIndex);
+                });
+
+                // 清除 sessionStorage 中的 NowPageIndex 值
+                if (storedPageIndex) {
+                    sessionStorage.removeItem('NowPageIndex');
+                }
+            });
+        </script>
+    }
+
+
+</head>
+
+<body>
+    <!-- 在代码中定义一个变量来存储图片网址的前缀 -->
+    @{
+        string imageUrlPrefix = "https://finalprojectbackend.azurewebsites.net/BreakingNew";
+    }
+    <div class="announcement-container">  
+        <div class="container">
+            <h2>公告專區</h2>
+            <table id="BreakingNews" class="table table-bordered dt-responsive" style="width:100%">            
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="td-image">
+                                <a asp-controller="BreakingNews" asp-action="Description" asp-route-id="@item.BreakingNewsId" title="@item.Title">
+                                    <img src="@imageUrlPrefix/@item.ActivityUrl" alt="@item.Title">
+
+                                </a>
+                            </td>
+                            <td class="td-description">
+                                <a title="@item.Title"> @item.Title </a>
+                                <br>
+                                <a asp-controller="BreakingNews" asp-action="Description" asp-route-id="@item.BreakingNewsId" title="@item.IndexDescription">@item.IndexDescription</a>
+                            </td>
+                            <td class="td-time">
+                                上架時間:
+                                <br>
+                                @item.Date
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+

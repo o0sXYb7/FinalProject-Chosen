@@ -1,0 +1,233 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+@section Styles
+{
+    <style>
+        .RenderBody{
+            all:unset;
+        }
+    </style>
+}
+
+<!-- Login Section Begin -->
+<section class="login spad">
+    <div class="container" id="login-form">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="login__form">
+                    <h3>登入</h3>
+                    <form v-show="!showForgotPassword">
+                        <div class="input__item">
+                            <input type="text" placeholder="電子郵件" v-model="email" name="Email">
+                            <span class="icon_mail"></span>
+                        </div>
+                        <div class="input__item">
+                            <input type="password" placeholder="密碼" v-model="password" name="Password">
+                            <span class="icon_lock"></span>
+                        </div>
+                        <button type="button" class="site-btn" v-on:click="submitForm">登入</button>
+                        <a href="#" class="forget_pass" v-on:click="toggleForgotPassword">忘記密碼?</a>
+                    </form>
+
+
+                    <form id="forgot-password-form" v-show="showForgotPassword">
+                        <div class="input__item">
+                            <input type="text" placeholder="Email address" v-model="forgotPasswordEmail" name="ForgotPasswordEmail">
+
+                            <span class="icon_mail"></span>
+                        </div>
+                        <button type="button" class="site-btn" v-on:click="sendResetPasswordEmail">寄送驗證碼</button>
+                        <a href="#" class="forget_pass" v-on:click="toggleForgotPassword">返回登入</a>
+
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="login__register">
+                    <h3>沒有帳號?</h3>
+
+                    <button class="site-btn register-btn" v-on:click="register">註冊</button>
+                </div>
+            </div>
+        </div>
+        @*        Google API test
+        *@
+        <div id="g_id_onload"
+             data-client_id="814940950099-dcsgcs0vghj6gfeuf0jofonvrv0prmot.apps.googleusercontent.com"
+             data-login_uri="https://localhost:7115/Member/Login"
+             data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="outline"
+             data-text="sign_in_with"
+             data-shape="rectangular"
+             data-logo_alignment="left">
+        </div>
+        @*        Social Media Login
+        *@
+@*        <div class="row d-flex justify-content-center">
+            <div class="col-lg-6">
+                <div class="login__social__links">
+
+                    <ul>
+
+                        <li>
+                            <a href="@Url.Action("GoogleLogin", "Member")" class="google">
+                                <i class="fa fa-google"></i> Sign in With Google
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("TwitterLogin", "Member")" class="twitter">
+                                <i class="fa fa-twitter"></i> Sign in With Twitter
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>*@
+    </div>
+
+</section>
+<!-- Login Section End -->
+@section Scripts
+    {
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    email: '',
+                    password: '',
+                    forgotPasswordEmail: '',
+                    showForgotPassword: false
+                };
+            },
+            methods: {
+                submitForm() {
+                    const formData = {
+                        Email: this.email,
+                        Password: this.password
+                    };
+
+                    axios.post('/Member/Login', formData)
+                        .then(response => {
+                            if (response.data.success) {
+                                //alert("登入成功");
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 1000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    },
+                                    willClose: () => {
+                                        // 在Toast关闭之前执行跳转操作
+                                        window.location.href = '/Home/Index';  // 替换为您需要跳转的页面的URL
+                                    }
+                                })
+
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: '登入成功'
+                                })
+
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '登入失敗',
+                                    text: '請確認您輸入的信箱及密碼是否正確',
+                                    footer: ''
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                },
+                register() {
+                    window.location.href = '/Member/Register';
+                },
+                toggleForgotPassword() {
+                    this.showForgotPassword = !this.showForgotPassword;
+                },
+                sendResetPasswordEmail() {
+                    const formData = {
+                        email: this.forgotPasswordEmail
+                    };
+
+                    // 發送重設密碼郵件的請求
+                    axios.post('/Member/SendResetPasswordEmail', formData)
+                        .then(response => {
+                            if (response.data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '發送郵件成功',
+                                    text: '請查看您的信箱',
+                                    footer: ''
+                                });
+                            } else Swal.fire({
+                                icon: 'error',
+                                title: '發送郵件失敗',
+                                text: '請確認您輸入的信箱是否正確',
+                                footer: ''
+                            });
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            Swal.fire({
+                                icon: 'question',
+                                title: '發生未知錯誤',
+                                text: '請稍後再試',
+                                footer: ''
+                            });
+                        });
+                },
+                ChangePassword() {
+                    const formData = {
+                        Email: this.forgotPasswordEmail,
+                        Password: this.NewPassword,
+
+                    };
+                    //發送重置密碼的請求
+                    axios.post('/Member/ChangePassword', formData)
+                        .then(response => {
+                            if (response.data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '已重設密碼',
+                                    text: '點擊確認後返回登入頁面',
+                                    footer: ''
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '重設密碼失敗',
+                                    text: '請確認您輸入的密碼須至少為八位數，且包含英數字',
+                                    footer: ''
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            Swal.fire({
+                                icon: 'question',
+                                title: '發生未知錯誤',
+                                text: '請稍後再試',
+                                footer: ''
+                            });
+
+                        });
+                },
+            }
+        });
+
+        app.mount('#login-form');
+    </script>
+}

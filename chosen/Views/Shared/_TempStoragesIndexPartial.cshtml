@@ -1,0 +1,97 @@
+﻿@model IEnumerable<chosen.Models.TempStoragesViewModel>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 PDT_Sixty">
+            @*放這裡*@
+            <table class="table table-striped" id="table_tempstorage">
+                <thead>
+                    <tr>
+                        <th>
+                            倉庫ID
+                        </th>
+                        <th>
+                            獎池
+                        </th>
+                        <th>
+                            一番賞名稱
+                        </th>
+                        <th>
+                            數量
+                        </th>
+                        <th>
+                            縮圖
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.TempStorage.AwardDate)
+                        </th>
+                        <th>
+                            截止時間
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.TempStorage.Created)
+                        </th>
+                        <th id="functionBtn" class="functionHeader">
+                            功能
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="temp-nowrap">
+                                @Html.DisplayFor(modelItem => item.TempStorageId)
+                            </td>
+                            <td class="temp-nowrap">
+                                @Html.DisplayFor(modelItem => item.ShowRawardName)
+                            </td>
+                            <td class="temp-nowrap">
+                                @Html.DisplayFor(modelItem => item.PrizeName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PrizeQuantity)
+                            </td>
+                            <td>
+                                <img src="https://finalprojectbackend.azurewebsites.net/img/webDataPicture/@item.TempStorage.PrizePicture" alt="Prize Picture" id="PrizePicture">
+                            </td>
+                            <td>
+                                @(((DateTime)item.TempStorage.AwardDate).ToString("yyyy/M/d"))
+                            </td>
+                            <td>
+                                @(((DateTime)item.Deadline).ToString("yyyy/M/d"))
+                            </td>
+                            <td>
+                                @*@Html.DisplayFor(modelItem => item.TempStorage.Created)*@
+                                <input class="commodity-check" type="checkbox" name="TempStorage.Created" @(item.TempStorage.Created == true ? "checked" : "") disabled />
+                            </td>
+                            <td class="functionCell">
+                                @if ((bool)!item.TempStorage.Created && (bool)!item.TempStorage.Receive && item.Deadline > DateTime.Now)
+                                {
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createCommodity" data-id="@item.TempStorageId" id="createModal">
+                                        新增商品
+                                    </button>
+                                }
+
+                                @if ((bool)!item.TempStorage.Receive)
+                                {
+                                    <button type="button" class="btn btn-primary" onclick="markAsReceived(@item.TempStorageId)">領取</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- CreateCommodity Modal -->
+<div class="modal fade" id="createCommodity" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="modalContext" class="modal-content">
+        </div>
+    </div>
+</div>
+

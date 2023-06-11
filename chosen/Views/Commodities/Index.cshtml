@@ -1,0 +1,104 @@
+﻿@model IEnumerable<chosen.Models.Commodity>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TempStorageId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MemberId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CommodityName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CommodityQuantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CommodityUnitPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Deadline)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OnShelves)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TempStorageId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MemberId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CommodityName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CommodityQuantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CommodityUnitPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Deadline)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OnShelves)
+                </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CommodityId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.CommodityId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.CommodityId">Delete</a> |
+                @*<a asp-action="RemoveShelves" asp-route-id="@item.CommodityId">RemoveShelves</a>*@
+                <a href="#" onclick="removeShelves(@item.CommodityId)">RemoveShelves</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#success-message").delay(5000).fadeOut("slow");
+        });
+    </script>
+
+    <script>
+        function removeShelves(id) {
+            $.ajax({
+                url: '@Url.Action("RemoveShelves", "Commodities")',
+                type: "POST",
+                data: { id: id },
+                success: function (result) {
+                    location.reload();
+                    // 成功處理結果
+                    var message = result.message;
+                    if (message) {
+                        alert(message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("下架商品失敗。");
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,64 @@
+﻿<div style="width:80%">
+    <h1>支付回傳訊息</h1>
+    <h3>接收參數:</h3>
+    <div id="receiveObj">@Html.Raw(ViewData["ReceiveObj"])</div>
+    <h3>交易訊息:</h3>
+    <div id="tradeInfo">@Html.Raw(ViewData["TradeInfo"])</div>
+    <!-- 将各个ViewData数据项创建对应的div -->
+    <div id="merchantOrderNo">@Html.Raw(ViewData["MerchantOrderNo"])</div>
+    <div id="status">@Html.Raw(ViewData["Status"])</div>
+    <div id="amt">@Html.Raw(ViewData["Amt"])</div>
+    <div id="tradeNo">@Html.Raw(ViewData["TradeNo"])</div>
+    <div id="itemDesc">@Html.Raw(ViewData["ItemDesc"])</div>
+    <div id="paymentType">@Html.Raw(ViewData["PaymentType"])</div>
+    <div id="expireDate">@Html.Raw(ViewData["ExpireDate"])</div>
+    <div id="bankCode">@Html.Raw(ViewData["BankCode"])</div>
+    <div id="codeNo">@Html.Raw(ViewData["CodeNo"])</div>
+
+</div>
+
+
+@section Scripts{
+    <script>
+        // 获取需要发送的数据
+        var receiveObj = $("#receiveObj").html();
+        var tradeInfo = $("#tradeInfo").html();
+        var merchantOrderNo = $("#merchantOrderNo").html();
+        var status = $("#status").html();
+        var amt = $("#amt").html();
+        var tradeNo = $("#tradeNo").html();
+        var itemDesc = $("#itemDesc").html();
+        var paymentType = $("#paymentType").html();
+        var expireDate = $("#expireDate").html();
+        var bankCode = $("#bankCode").html();
+        var codeNo = $("#codeNo").html();
+
+        // 使用AJAX发送数据到控制器方法
+        $.ajax({
+            type: "POST",
+            url: "/Payment/CallbackCustomerToStore",
+            data: {
+                receiveObj: receiveObj,
+                tradeInfo: tradeInfo,
+                merchantOrderNo: merchantOrderNo,
+                status: status,
+                amt: amt,
+                tradeNo: tradeNo,
+                itemDesc: itemDesc,
+                paymentType: paymentType,
+                expireDate: expireDate,
+                bankCode: bankCode,
+                codeNo: codeNo
+            },
+            success: function (response) {
+                // 请求成功时的处理逻辑
+                window.location.href = "/Payment/PaymentSuccessful";
+            },
+            error: function (error) {
+                // 请求失败时的处理逻辑
+                window.location.href = "/Payment/PaymentUnsuccessful";
+            }
+        });
+    </script>
+}
+

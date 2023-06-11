@@ -1,0 +1,367 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FinalProject</title>
+
+    @*new layout*@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet" />
+    <link href="~/fonts/boxicons.css" rel="stylesheet" />
+    <link href="~/css/layoutcss/core.css" rel="stylesheet" />
+    <link href="~/css/layoutcss/theme-default.css" rel="stylesheet" />
+    <link href="~/css/layoutcss/demo.css" rel="stylesheet" />
+    <link href="~/css/layoutcss/perfect-scrollbar.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@3.0.0-alpha.13/dist/vuetify.min.css" rel="stylesheet">
+
+    @*myself*@
+    <link href="~/lib/datatables/datatables.min.css" rel="stylesheet" />
+    <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+    @await RenderSectionAsync("Styles", required: false)
+
+    @*layout import*@
+    <script src="~/js/layoutjs/helpers.js"></script>
+    <script src="~/js/layoutjs/config.js"></script>
+</head>
+<body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+
+            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+                <div class="app-brand demo">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="app-brand-link">
+                        <span class="app-brand-text demo menu-text fw-bolder ms-2">天選</span>
+                    </a>
+                    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+                        <i class="bx bx-chevron-left bx-sm align-middle"></i>
+                    </a>
+                </div>
+
+                <div class="menu-inner-shadow"></div>
+
+                <ul class="menu-inner py-1">
+                    <!-- Dashboard -->
+                    <li class="menu-item @if(ViewContext.RouteData.Values["controller"].ToString() == "Home") {
+                    <text>active</text>
+} else {
+                    <text></text>
+}">
+                        <a asp-area="" asp-controller="Home" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                            <div data-i18n="Analytics">控制台</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item @if(ViewContext.RouteData.Values["controller"].ToString() == "RawardLibs" || ViewContext.RouteData.Values["controller"].ToString() == "RawardItems") {
+                    <text>active</text>
+} else {
+                    <text></text>
+}">
+                        <a asp-area="" asp-controller="RawardLibs" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-store"></i>
+                            <div data-i18n="Analytics">一番賞資料庫</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item @if(ViewContext.RouteData.Values["controller"].ToString() == "ShowRawards" || ViewContext.RouteData.Values["controller"].ToString() == "ShowRawardItems") {
+                    <text>active</text>
+} else {
+                    <text></text>
+}">
+                        <a asp-area="" asp-controller="ShowRawards" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-store-alt"></i>
+                            <div data-i18n="Analytics">獎池資訊</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item @if(ViewContext.RouteData.Values["controller"].ToString() == "ImageStores") {
+                    <text>active</text>
+} else {
+                    <text></text>
+}">
+                        <a asp-area="" asp-controller="ImageStores" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-image"></i>
+                            <div data-i18n="Analytics">圖庫管理</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item @if(ViewContext.RouteData.Values["controller"].ToString() == "Factories") {
+                    <text>active</text>
+} else {
+                    <text></text>
+}">
+                        <a asp-area="" asp-controller="Factories" asp-action="Index" class="menu-link">
+                            <i class='menu-icon tf-icons bx bxs-institution' ></i>
+                            <div data-i18n="Analytics">廠商管理</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item @if(ViewContext.RouteData.Values["controller"].ToString() == "DrawRecords") {
+                    <text>active</text>
+} else {
+                    <text></text>
+}">
+                        <a asp-area="" asp-controller="DrawRecords" asp-action="Index" class="menu-link">
+                            <i class='menu-icon tf-icons bx bxs-coupon'></i>
+                            <div data-i18n="Analytics">抽獎紀錄</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item @if(ViewContext.RouteData.Values["controller"].ToString() == "TempStorages") {
+                    <text>active</text>
+} else {
+                    <text></text>
+}">
+                        <a asp-area="" asp-controller="TempStorages" asp-action="Index" class="menu-link">
+                            <i class='menu-icon tf-icons bx bxs-spreadsheet'></i>
+                            <div data-i18n="Analytics">暫存倉管理</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item @if(ViewContext.RouteData.Values["controller"].ToString() == "Commodities") {
+                    <text>active</text>
+} else {
+                    <text></text>
+}">
+                        <a asp-area="" asp-controller="Commodities" asp-action="Index" class="menu-link">
+                            <i class='menu-icon tf-icons bx bxs-package'></i>
+                            <div data-i18n="Analytics">商品管理</div>
+                        </a>
+                    </li>
+
+
+                    <li class="menu-item @if(ViewContext.RouteData.Values["controller"].ToString() == "TradeHistories") {
+                    <text>active</text>
+} else {
+                    <text></text>
+}">
+                        <a asp-area="" asp-controller="TradeHistories" asp-action="Index" class="menu-link">
+                            <i class='menu-icon tf-icons bx bxs-notepad'></i>
+                            <div data-i18n="Analytics">交易紀錄</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item @if(ViewContext.RouteData.Values["controller"].ToString() == "Wishlists") {
+                    <text>active</text>
+} else {
+                    <text></text>
+}">
+                        <a asp-area="" asp-controller="Wishlists" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bxs-heart"></i>
+                            <div data-i18n="Analytics">願望清單</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item @if(ViewContext.RouteData.Values["controller"].ToString() == "LineBots") {
+                    <text>active</text>
+} else {
+                    <text></text>
+}">
+                        <a asp-area="" asp-controller="LineBots" asp-action="Index" class="menu-link">
+                            <i class='menu-icon tf-icons bx bxs-message-rounded'></i>
+                            <div data-i18n="Analytics">Line廣播</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item @if(ViewContext.RouteData.Values["controller"].ToString() == "RawardLibs" || ViewContext.RouteData.Values["controller"].ToString() == "RawardItems") {
+                    <text>active</text>
+} else {
+                    <text></text>
+}">
+                        <a asp-area="" asp-controller="Payments" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bxs-wallet-alt"></i>
+                            <div data-i18n="Analytics">儲值紀錄</div>
+                        </a>
+                    </li>
+
+                    @*                    <li class="menu-header small text-uppercase">
+                    <span class="menu-header-text">Pages</span>
+                    </li>*@
+
+                </ul>
+            </aside>
+            <!-- / Menu -->
+            <!-- Layout container -->
+            <div class="layout-page">
+                <!-- Navbar -->
+
+                <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+                     id="layout-navbar">
+                    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                        <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                            <i class="bx bx-menu bx-sm"></i>
+                        </a>
+                    </div>
+
+                    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                        <!-- Search -->
+                        <div class="navbar-nav align-items-center">
+                            <div class="nav-item d-flex align-items-center">
+                                <i class="bx bx-search fs-4 lh-0"></i>
+                                <input type="text"
+                                       class="form-control border-0 shadow-none"
+                                       placeholder="Search..."
+                                       aria-label="Search..." />
+                            </div>
+                        </div>
+                        <!-- /Search -->
+
+                        <ul class="navbar-nav flex-row align-items-center ms-auto">
+
+                            <!-- User -->
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        <img src="~/img/avatars/1.png" class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="avatar avatar-online">
+                                                        <img src="~/img/avatars/1.png" class="w-px-40 h-auto rounded-circle" />
+
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <span class="fw-semibold d-block">John Doe</span>
+                                                    <small class="text-muted">Admin</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="bx bx-user me-2"></i>
+                                            <span class="align-middle">My Profile</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="bx bx-cog me-2"></i>
+                                            <span class="align-middle">Settings</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <span class="d-flex align-items-center align-middle">
+                                                <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
+                                                <span class="flex-grow-1 align-middle">Billing</span>
+                                                <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <form id="logoutForm" method="post" asp-controller="Login" asp-action="Loginview">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bx bx-power-off me-2"></i>
+                                                <span class="align-middle">Login</span>
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form id="logoutForm" method="post" asp-controller="Login" asp-action="Logout">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bx bx-power-off me-2"></i>
+                                                <span class="align-middle">Logout</span>
+                                            </button>
+                                        </form>
+                                    </li>
+
+                                </ul>
+                            </li>
+                            <!--/ User -->
+                        </ul>
+                    </div>
+                </nav>
+
+                <!-- / Navbar -->
+                <!-- Content wrapper -->
+                <div class="content-wrapper">
+                    <!-- Content -->
+
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        <div class="row">
+                            @RenderBody()
+                        </div>
+
+                    </div>
+                    <!-- / Content -->
+                    <!-- Footer -->
+                    <footer class="content-footer footer bg-footer-theme">
+                        <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                            <div class="mb-2 mb-md-0">
+                                ©
+                                <script>
+                                    document.write(new Date().getFullYear());
+                                </script>
+                                , made with ❤️ by
+                                <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
+                            </div>
+                            <div>
+                                <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
+                                <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
+
+                                <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
+                                   target="_blank"
+                                   class="footer-link me-4">Documentation</a>
+
+                                <a href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
+                                   target="_blank"
+                                   class="footer-link me-4">Support</a>
+                            </div>
+                        </div>
+                    </footer>
+                    <!-- / Footer -->
+
+                    <div class="content-backdrop fade"></div>
+                </div>
+                <!-- Content wrapper -->
+            </div>
+            <!-- / Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
+    @*layout import*@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/layoutjs/popper.js"></script>
+    <script src="~/js/layoutjs/perfect-scrollbar.js"></script>
+    <script src="~/js/layoutjs/menu.js"></script>
+    <script src="~/js/layoutjs/main.js"></script>
+    <script src="~/js/layoutjs/dashboards-analytics.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.47/vue.global.min.js" integrity="sha512-DJ2+sosWB5FnZAIeCWAHu2gxQ7Gi438oOZLcBQSOrW8gD0s7LIXDv/5RW76B3FcljF40BXnfqNIo6Dhp7dFHJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.js" integrity="sha512-RjvSEaeDqPCfUVQ9kna2/2OqHz/7F04IOl1/66LmQjB/lOeAzwq7LrbTzDbz5cJzlPNJ5qteNtHR56XaJSTNWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    @*do myself*@
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @*<script src="~/js/tablejq.min.js"></script>*@
+
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.2.3/dist/vuetify.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

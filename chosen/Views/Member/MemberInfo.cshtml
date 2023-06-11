@@ -1,0 +1,125 @@
+﻿@model chosen.Models.MemberInfo
+
+@{
+    ViewData["Title"] = "會員資訊";
+}
+
+<div id="app" class="container">
+    <h1>會員資訊</h1>
+
+    <form>
+        @Html.AntiForgeryToken()
+
+        @*以下資料僅供會員檢視*@
+        <div class="form-group">
+            <label asp-for="RegisterDate">註冊日期</label>
+            <input v-model="MemberInfo.RegisterDate" :value="MemberInfo.RegisterDate" name="RegisterDate" class="form-control" readonly>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ResetDateTime">重設密碼日期</label>
+            <input v-model="MemberInfo.ResetDateTime" :value="MemberInfo.ResetDateTime" name="ResetDateTime" class="form-control" readonly>
+        </div>
+
+        @*以下資料可供會員修改*@
+        <div class="form-group">
+            <label asp-for="Birthday">生日</label>
+            <input v-model="MemberInfo.Birthday" :value="MemberInfo.Birthday" name="Birthday" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" v-model="MemberInfo.Email" :value="MemberInfo.Email" name="Email" class="form-control" placeholder="Enter your email">
+        </div>
+
+        <div class="form-group">
+            <label for="memberName">名字</label>
+            <input id="memberName" v-model="MemberInfo.MemberName" :value="MemberInfo.MemberName" name="MemberName" class="form-control" placeholder="Enter your name">
+        </div>
+
+        <div class="form-group">
+            <label for="phone">手機</label>
+            <input id="phone" v-model="MemberInfo.Phone" :value="MemberInfo.Phone" name="Phone" class="form-control" placeholder="Enter your phone number">
+        </div>
+
+        <div class="form-group">
+            <label for="address">地址</label>
+            <input id="address" v-model="MemberInfo.Address" :value="MemberInfo.Address" name="Address" class="form-control" placeholder="Enter your address">
+        </div>
+
+        <button type="button" class="btn btn-primary" v-on:click="saveMemberData">儲存</button>
+    </form>
+</div>
+
+@section Scripts{
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    MemberInfo: []
+                };
+            },
+            methods: {
+                GetMemberInfo() {
+                    let _this = this;
+                    axios.get('/Member/GetMemberData').then((response) => {
+                        _this.MemberInfo = response.data;
+                    });
+                },
+                saveMemberData() {
+                    let _this = this;
+                    axios.post('/Member/EditMemberData', _this.MemberInfo, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => {
+                            if (response.data.Changesuccess) {
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 1000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                });
+
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: '更改成功'
+                                });
+                            } else {
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 1000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                });
+
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: '更改失敗'
+                                });
+                            }
+                        });
+                }
+            },
+            mounted() {
+                this.GetMemberInfo();
+            },
+        });
+
+        app.mount('#app');
+    </script>
+
+}
+

@@ -1,0 +1,88 @@
+﻿@{
+    Layout = "_Login";
+}
+
+<div class="container-xxl">
+    <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner">
+            <!-- Register -->
+            <div class="card">
+                <div class="card-body">
+                    <!-- Logo -->
+                    <div class="app-brand justify-content-center">                         
+                        <span class="app-brand-text demo text-body fw-bolder">天選</span>
+                    </div>
+                    <!-- /Logo -->
+                    <h4 class="mb-2">歡迎登入天選後台! 👋</h4>
+
+                    <form id="loginForm" class="mb-3">
+                        <div class="mb-3">
+                            <label for="EmployeeName" class="form-label">請輸入帳號</label>
+                            <input type="text" class="form-control" id="EmployeeName" name="EmployeeName" placeholder="請輸入帳號" autofocus />
+                        </div>
+                        <div class="mb-3 form-password-toggle">
+                            <div class="d-flex justify-content-between">
+                                <label class="form-label" for="Password">請輸入密碼</label>
+                            </div>
+                            <div class="input-group input-group-merge">
+                                <input type="password" id="Password" name="Password" class="form-control" placeholder="請輸入密碼" aria-describedby="password" />
+
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-primary d-grid w-100" type="submit">登入</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /Register -->
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+            // 監聽表單提交事件
+            $('#loginForm').submit(function (e) {
+                e.preventDefault(); // 阻止表單的默認提交行為
+
+                // 獲取表單中的值
+                var employeeName = $('#EmployeeName').val();
+                var password = $('#Password').val();
+
+                // 建立要傳送的資料物件
+                var data = {
+                    EmployeeName: employeeName,
+                    Password: password
+                };
+
+                // 發送 AJAX 請求
+                $.ajax({
+                    url: '@Url.Action("Login", "Login")', // 替換成適當的控制器和動作名稱
+                    type: 'POST',
+                    dataType: 'json',
+                    data: data,
+                    success: function (response) {
+                        if (response.success) {
+                            // 登入成功，顯示成功訊息
+                            alert("登入成功");
+                            // 跳轉到 Home/Index 頁面
+                            window.location.href = "/Home/Index";
+                        } else {
+                            // 登入失敗，顯示失敗訊息
+                            alert("登入失敗");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // 在錯誤回調函式中處理錯誤情況
+                        alert("發生錯誤");
+                    }
+                });
+            });
+        });
+
+    </script>
+
+}

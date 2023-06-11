@@ -1,0 +1,270 @@
+﻿@section Styles
+{
+    <style>
+        .section-title{
+            margin-bottom:30px;
+        }
+
+        .trending__product{
+            margin-top: 10px;
+        }
+
+        .ichiban-select:focus {
+            box-shadow: none;
+            border-color: #ced4da;
+        }
+
+        .product__item__text h5 {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            white-space: normal;
+            text-overflow: ellipsis;
+            width: 100%; /* 添加固定的宽度 */
+        }
+
+/*        .ichiban-select:selection {
+            background-color: red;
+        }*/
+
+        .noIchiban {
+            /*display: flex;*/
+        }
+
+        .pagination{
+            margin-bottom:30px;
+        }
+
+        .pagination li {
+            font-weight: 400;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+            .pagination li a {
+                font-weight: 400;
+                color: rgb(193, 193, 193);
+            }
+
+        .pagination .active {
+            color: rgb(255, 255, 255);
+            background-color: #e53637;
+            border-radius: 3px;
+            padding: 0px 10px;
+        }
+
+            .pagination .active a {
+                color: rgb(255, 255, 255);
+            }
+
+        .HI i {
+            position: absolute;
+            font-size: 30px;
+            top: 15px;
+            right: 15px;
+            color: red;
+        }
+
+            .HI i:hover {
+                position: absolute;
+                color: #68BE8D;
+                font-size: 30px;
+                top: 15px;
+                right: 15px;
+            }
+
+
+    </style>
+}
+
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                @*Start*@
+                <div id="app">
+                    @*篩選系列 篩選廠商*@
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="form-group">
+                                @*<label for="seriesSelect">系列:</label>*@
+                                <select class="form-control ichiban-select" id="seriesSelect" v-model="selectedSeries">
+                                    <option value="">所有系列</option>
+                                    <option v-for="series in uniqueSeries" :value="series">{{ series }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="form-group">
+                                @*<label for="firmSelect">廠商:</label>*@
+                                <select class="form-control ichiban-select" id="firmSelect" v-model="selectedFirm">
+                                    <option value="">所有廠商</option>
+                                    <option v-for="firm in uniqueFirms" :value="firm">{{ firm }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*篩選系列 篩選廠商End*@
+                    <div class="trending__product">
+                        <div class="row">
+                            <div class="col-lg-8 col-md-8 col-sm-8">
+                                <div class="section-title">
+                                    <h4>獎池一覽</h4>
+                                </div>
+                            </div>
+                            @*<div class="col-lg-4 col-md-4 col-sm-4">
+                                <div class="btn__all">
+                                    <a href="#" class="primary-btn">View All <span class="arrow_right"></span></a>
+                                </div>
+                            </div>*@
+                        </div>
+                        <div class="row">
+                            @*獎池渲染*@
+                            <template v-if="paginatedShowRawardItems.length">
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-6" v-for="item in paginatedShowRawardItems">
+                                    <div id="product__item-group">
+                                        <div class="product__item" :key="item.ShowRawardId">
+                                            <div class="product__item__pic prize-img" @@click="goToDetail(item.ShowRawardId)" :style="{backgroundImage: GetImage(item.Image)}">
+                                                @*i標籤-愛心*@
+                                                <div class="HI">
+                                                    <i class="HI fas fa-heart " @@click.stop="handleClick(item)"></i>
+                                                </div>
+                                                @*i標籤-愛心End*@
+                                                <div class="ep">{{ item.RemainingItems }} / {{ item.TotalItems }}</div>
+                                                @*<div class="comment"><i class="fa fa-comments"></i> 11</div>*@
+                                                @*<div class="view"><i class="fa fa-eye"></i> 9141</div>*@
+                                            </div>
+                                            <div class="product__item__text prize-label">
+                                                <ul>
+                                                    <li>{{item.FactoryName}}</li>
+                                                    <li>{{item.Series}}</li>
+                                                    @*<img :src="GetImage(item.image)" />*@
+                                                </ul>
+                                                    <h5 class="prize-name">{{ item.Name }}</h5>
+                                                <div class="prize">
+                                                    <h5 class="prize-price">NT${{ item.OneDrawMoney }}</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="noIchiban">
+                                    <p>找不到獎池</p>
+                                </div>
+                            </template> 
+                            @*獎池渲染End*@
+                        </div>
+                    </div>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            <li :disabled="currentPage === 1" @@click="currentPage--">上一頁</li>
+                            <li v-for="(page, index) in totalPages" :key="index" :class="{ active: currentPage === index + 1 }">
+                                <a @@click.prevent="currentPage = index + 1">{{ index + 1 }}</a>
+                            </li>
+                            <li :disabled="currentPage === totalPages" @@click="currentPage++">下一頁</li>
+                        </ul>
+                    </nav>
+
+                </div>
+                @*End*@
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    showRawardItems: [],
+                    selectedSeries: '',
+                    selectedFirm: '',
+                    itemsPerPage: 5, // 每页显示的项目数
+                    currentPage: 1, // 当前页码
+                    clickedItems:[],//存給願望清單的
+                };
+            },
+            methods: {
+                GetShowRawardItems() {
+                    let _this = this;
+                    axios.get('/commodities/GetPrizePool').then((response) => {
+                        _this.showRawardItems = response.data;
+                    });
+                },
+                GetImage(img) {
+                    var full = `url(https://finalprojectbackend.azurewebsites.net/img/webDataPicture\/${img})`;
+                    console.log(full)
+                    return full;
+                },
+                setPage(pageNumber) {
+                    this.currentPage = pageNumber;
+                },
+                goToDetail(id) {
+                    axios.get(`/PrizePoolDetail/Index/${id}`).then((res) => {
+                        window.location.href = res.request.responseURL;
+                    });
+                },
+                handleClick(item) {
+                    // 將訊息儲存至clickedItems中，準備發送到後端，儲存到資料庫中
+                    this.clickedItems.push(item.ShowRawardId);
+
+                    axios.post('/Wishlists/FrontCreate', { wId: item.ShowRawardId })
+                        .then((response) => {
+                            alert('已加入願望清單');
+                            console.log('Item saved successfully!');
+                        })
+                        .catch((error) => {
+                            console.error('Failed to save item:', error);
+                        });
+                }
+            },
+            computed: {
+                uniqueSeries() {
+                    return [...new Set(this.showRawardItems.map(item => item.Series))];
+                },
+                uniqueFirms() {
+                    return [...new Set(this.showRawardItems.map(item => item.FactoryName))];
+                },
+                filteredShowRawardItems() {
+                    let items = this.showRawardItems;
+                    if (this.selectedSeries) {
+                        items = items.filter(item => item.Series === this.selectedSeries);
+                    }
+                    if (this.selectedFirm) {
+                        items = items.filter(item => item.FactoryName === this.selectedFirm);
+                    }
+                    return items;
+                },
+                totalPages() {
+                    return Math.ceil(this.filteredShowRawardItems.length / this.itemsPerPage);
+                },
+                paginatedShowRawardItems() {
+                    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+                    const endIndex = startIndex + this.itemsPerPage;
+                    return this.filteredShowRawardItems.slice(startIndex, endIndex);
+                }
+            },
+            watch: {
+                currentPage(newPage) {
+                    if (newPage < 1) {
+                        this.currentPage = 1;
+                    } else if (newPage > this.totalPages) {
+                        this.currentPage = this.totalPages;
+                    }
+                }
+            },
+            mounted() {
+                this.GetShowRawardItems();
+            }
+
+        });
+
+        app.mount('#app');
+    </script>
+}

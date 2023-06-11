@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="description" content="Anime Template">
+    <meta name="keywords" content="Anime, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>選者 | 究極的一番賞</title>
+
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300&display=swap" rel="stylesheet">
+
+    <!-- Css Styles -->
+
+
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" type="text/css" />
+
+    <link rel="stylesheet" href="~/css/plyr.css" type="text/css">
+    @*<link rel="stylesheet" href="~/css/nice-select.css" type="text/css">*@
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="~/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="~/css/style.css" type="text/css">
+    <link rel="stylesheet" href="~/css/owl.carousel.min-2.css" type="text/css">
+    @await RenderSectionAsync("Styles", required: false)
+    <style>
+
+        @@media (min-width: 1201px) {
+          .header__logo {
+            padding-top: 10px;
+          }
+        }
+
+        @@media (max-width: 1200px) and (min-width: 993px) {
+          .header__logo {
+            /*all: unset;*/
+            padding-top: 15px !important;
+          }
+        }
+
+
+        .grid_line {
+            width: 100%; /* 該元素佔據父元素的 100% 寬度 */
+            height: 100%; /* 該元素佔據父元素的 100% 高度 */
+            /*text-align: center;*/ /* 文字居中對齊 */
+            color: rgb(0, 0, 0); /* 文字顏色為黑色 */
+            box-sizing: border-box; /* 使用邊框盒模型計算盒尺寸 */
+            /* border: 1px solid #ccc; */
+            background: 
+            -webkit-linear-gradient(top, transparent 15px, #f0efef 0), 
+            -webkit-linear-gradient(left, transparent 15px, #f0efef 0);
+            /* 背景由上到下和由左到右應用漸變效果 */
+            background-size: 16px 16px; /* 指定網格方塊的大小為 16px × 16px */
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header Section Begin -->
+    <header class="header" style="height:62.5px">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-1">
+                    <div class="header__logo">
+                        <a asp-area="" asp-controller="Home" asp-action="index">
+                            <img src="~/img/logo-white.png" />
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="header__nav">
+                        <nav class="header__menu mobile-menu">
+                            <ul>
+                                <li class="@(ViewContext.RouteData.Values["action"].ToString() == "Index" && ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : "")">
+                                    <a href="/Home/Index">首頁</a>
+                                </li>
+                                <li class="@(ViewContext.RouteData.Values["action"].ToString() == "BreakingNews" ? "active" : "")">
+                                    <a href="/BreakingNews/Index">最新消息</a>
+                                </li>
+                                <li class="@(ViewContext.RouteData.Values["action"].ToString() == "Ichiban" ? "active" : "")">
+                                    <a href="/Commodities/Ichiban">獎池一覽</a>
+                                </li>
+                                <li class="@(ViewContext.RouteData.Values["action"].ToString() == "AuctionCenter" ? "active" : "")">
+                                    <a href="/Commodities/AuctionCenter">交易中心</a>
+                                </li>
+                                <li class="@(ViewContext.RouteData.Values["action"].ToString() == "Customerservices" ? "active" : "")">
+                                    <a href="/Customerservices/Index">客服中心</a>
+
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-lg-3 dropdown-member-view">
+                    <div class="header__right">
+                        <a id="loginLink" asp-area="" asp-controller="Member" asp-action="LoginCookieCheck">
+                            登入
+                        </a>
+                        <div id="login-info">
+                            <a>
+                                <p class="card-text" style="color: white;">點數：<span id="memberPoint" style="color: white;"></span></p>
+                            </a>
+                            <div class="dropdown-member">
+                                <a id="loginLink" asp-area="" asp-controller="Member" asp-action="LoginCookieCheck">
+                                    <img id="loginimg" src="~/img/user.png" alt="登入" title="登入">
+                                </a>
+                                <div class="dropdown-menu">
+                                    <!-- 下拉選單內容 -->
+                                    <ul>
+                                        <li><a asp-area="" asp-controller="Member" asp-action="LoginCookieCheck">會員資訊</a></li>
+                                        <li><a asp-area="" asp-controller="Payment" asp-action="Center">儲值中心</a></li>
+                                        @*<li><a asp-area="" asp-controller="TempStorages" asp-action="Index">一番賞倉庫</a></li>*@
+                                        <li><a href="/TempStorages/Index">一番賞倉庫</a></li>
+                                        <li><a href="/Wishlists/Index">願望清單</a></li>
+                                        <li><a asp-area="" asp-controller="ReturnRecord" asp-action="Index">回報單紀錄</a></li>
+                                        <li><a asp-area="" asp-controller="Member" asp-action="Logout">登出</a></li>
+                                    </ul>
+                                </div>
+                        </div>
+                        
+                    </div>
+                        @*<a id="logoutLink" style="display: none;" asp-area="" asp-controller="Member" asp-action="Logout">登出</a>*@
+
+                    </div>
+                </div>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </header>
+
+    <div class="RenderBody ">
+        <div class="grid_line">
+            @RenderBody()
+        </div>
+    </div>
+
+
+    @*    <div class="container">
+    <main role="main" class="pb-3">
+    @RenderBody()
+    </main>
+    </div>*@
+
+    <footer class="footer">
+        <div class="back-top hide" title="回頂部"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="footer__logo">
+                        <a asp-area="" asp-controller="Home" asp-action="index"><img src="~/img/logo-white.png" alt=""></a>
+                    </div>
+                    <div class="copyright">
+                        此網站僅作為練習展示，無涉及任何商業活動，圖片版權歸《Banpresto》所有，如有侵權請聯繫我們，我們會在第一時間將其刪除。
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="footer__nav">
+                        <ul>
+                            <li class="active"><a asp-area="" asp-controller="Home" asp-action="index">首頁</a></li>
+                            <li><a asp-area="" asp-controller="Commodities" asp-action="Ichiban">獎池一覽</a></li>
+                            <li><a asp-area="" asp-controller="Home" asp-action="Aboutus">關於選者</a></li>
+                            <li><a asp-area="" asp-controller="Customerservices" asp-action="Index">客服中心</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <p>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This is made by <a href="https://colorlib.com" target="_blank">Erabareta Inc.</a>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @*<script src="/js/bootstrap.min.js" asp-append-version="true"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.min.js"></script>
+
+    @*    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>*@
+    @*<script src="~/js/footer.js"></script>*@
+    <script src="/js/player.js" asp-append-version="true"></script>
+    @*<script src="/js/jquery.nice-select.min.js" asp-append-version="true"></script>*@
+    <script src="/js/mixitup.min.js" asp-append-version="true"></script>
+    <script src="/js/jquery.slicknav.js" asp-append-version="true"></script>
+    <script src="/js/owl.carousel.min.js" asp-append-version="true"></script>
+    <!--<script src="js/owl.carousel.min-2.js"></script>-->
+    <script src="/js/main.js" asp-append-version="true"></script>
+    <script src="/js/main-2.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.47/vue.global.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            // 获取会员数据/顯示點數
+            $.ajax({
+                url: '/Payment/GetMemberData',
+                type: 'GET',
+                success: function (data) {
+                    $('#memberId').text(data.memberId);
+                    $('#memberPoint').text(data.memberPoint);
+                },
+                error: function (error) {
+                    //console.error('發生錯誤:', error);
+                }
+            });
+
+            // 捲軸偵測距離頂部超過 50 才顯示按鈕
+            $(window).scroll(function () {
+                if ($(window).scrollTop() > 50) {
+                    if ($(".back-top").hasClass("hide")) {
+                        $(".back-top").toggleClass("hide");
+                    }
+                } else {
+                    $(".back-top").addClass("hide");
+                }
+            });
+
+            // 點擊按鈕回頂部
+            $(".back-top").on("click", function (event) {
+                $("html, body").animate({
+                    scrollTop: 0
+                }, 0);
+            });
+
+            // 檢查是否登入
+            $.ajax({
+                url: '/Member/LoginCheckforLayout',
+                type: 'GET',
+                success: function (response) {
+                    if (response.isLoggedIn) {
+                        $('#loginLink').hide();
+                        $('#logoutLink').show();
+                        $('#login-info').show();
+                    } else {
+                        $('#loginLink').show();
+                        $('#logoutLink').hide();
+                        $('#login-info').hide();
+                    }
+                }
+            });
+
+            var image = document.getElementById("loginimg");
+
+            image.addEventListener("mouseover", function () {
+                this.src = "/img/reduser.png";
+            });
+
+            image.addEventListener("mouseout", function () {
+                this.src = "/img/user.png";
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

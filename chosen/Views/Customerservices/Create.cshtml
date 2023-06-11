@@ -1,0 +1,40 @@
+﻿@model chosen.Models.Customerservice
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Customerservice</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Class" class="control-label"></label>
+                <input asp-for="Class" class="form-control" />
+                <span asp-validation-for="Class" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuestionTitle" class="control-label"></label>
+                <input asp-for="QuestionTitle" class="form-control" />
+                <span asp-validation-for="QuestionTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AnswerTitle" class="control-label"></label>
+                <input asp-for="AnswerTitle" class="form-control" />
+                <span asp-validation-for="AnswerTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

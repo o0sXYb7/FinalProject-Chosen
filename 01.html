@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      /* border: 1px solid lightgray; */
+      border-radius: 3px;
+    }
+    
+    .button-container {
+      display: flex;
+      align-items: center;
+      border: 1px solid lightgray;
+      border-radius: 3px;
+    }
+    
+    .button {
+      /* padding: 5px; */
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+    }
+    
+    .input-field {
+      border: 1px solid lightgray;
+      /* border-bottom: 0; */
+      /* border-top: 0; */
+      border-left: 0;
+      border-right: 0;
+      /* padding: 5px; */
+      outline: none;
+      text-align: center;
+      width: 20px;
+    }
+
+    .btn-left{
+        /* border-right: 0; */
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .btn-right{
+        /* border-left: 0; */
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="button-container btn-left">
+      <button class="button">-</button>
+    </div>
+    <input type="text" class="input-field">
+    <div class="button-container btn-right">
+      <button class="button">+</button>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+﻿@model IEnumerable<chosen.Models.CommoditiesViewModel>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 PDT_Sixty">
+
+            <table class="table table-striped" id="table_commodity" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Commodity.TempStorageId)
+                        </th>
+                        <th>
+                            名稱
+                        </th>
+                        <th>
+                            縮圖
+                        </th>
+                        <th>
+                            數量
+                        </th>
+                        <th>
+                            單價
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Commodity.Deadline)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Commodity.OnShelves)
+                        </th>
+                        <th>
+                            功能
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Commodity.TempStorageId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Commodity.CommodityName)
+                            </td>
+                            <td>
+                                <img src="https://finalprojectbackend.azurewebsites.net/img/webDataPicture/@item.ShowRawardItemImage" alt="Prize Picture" id="PrizePicture">
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Commodity.CommodityQuantity)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Commodity.CommodityUnitPrice)
+                            </td>
+                            <td>
+                                @(((DateTime)item.Commodity.Deadline).ToString("yyyy/M/d"))
+                            </td>
+                            <td>
+                                <input class="commodity-check" type="checkbox" name="OnShelves" @(item.Commodity.OnShelves == true ? "checked" : "") disabled />
+                            </td>
+                            <td class="commodityBtn">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editCommodity" data-id="@item.Commodity.CommodityId" id="editModal">
+                                    編輯
+                                </button>
+                                @*<a href="#" onclick="removeShelves(@item.CommodityId)">下架</a>*@
+                                <button type="button" class="btn btn-danger" onclick="removeShelves(@item.Commodity.CommodityId)">
+                                    下架
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Edit _Commodities Modal -->
+            <div class="modal fade" id="editCommodity" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div id="modalContext" class="modal-content">
+            
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+

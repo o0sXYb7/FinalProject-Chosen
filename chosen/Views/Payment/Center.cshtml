@@ -1,0 +1,178 @@
+﻿@model chosen.ViewModel.PaymentViewModel
+
+@{
+    ViewData["Title"] = "Payment Center";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>儲值中心</title>
+</head>
+<body>
+    <div id="app" class="container mt-5">
+        <!-- Your Vue template here -->
+        <template v-if="!isLoggedin">
+            <h3>您未登入</h3>
+        </template>
+        <template v-else>
+            <h3>儲值中心</h3>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">會員資訊</h5>
+                    <p class="card-text">會員編號: {{ memberId }}</p>
+                    <p class="card-text">點數: {{ memberPoint }}</p>
+                    <button v-on:click="getPaymentRecords">查看儲值紀錄</button>
+                    <form v-if="paymentRecords.length > 0">
+                        <h5>儲值紀錄</h5>
+                        <ul>
+                            <li v-for="record in paymentRecords" :key="record.MerchantOrderNo">
+                                <p><strong>訂單號碼:</strong> {{ record.MerchantOrderNo }}</p>
+                                <p><strong>金額:</strong> {{ record.Amt }}</p>
+                                <p><strong>狀態:</strong> {{ record.Status }}</p>
+                                <p><strong>支付類型:</strong> {{ record.PaymentType }}</p>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+
+            </div>
+                     
+            <h5 class="mt-4">儲值選項</h5>
+            <h5>測試卡號:4000-2211-1111-1111</h5>
+
+            <div class="row mt-4">
+                <div class="col-md-4" v-for="option in options" :key="option.amount">
+                    <div class="card">
+                        <img :src="option.image" class="card-img-top" :alt="`儲值 ${option.amount} 點`">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ `儲值 ${option.amount} 點` }}</h5>
+                            <button class="btn btn-primary" v-on:click="purchase(option.amount)">儲值</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    @section Scripts
+    {
+
+        <script>
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        isLoggedin: false,
+                        memberId: '',
+                        memberPoint: 0,
+                        paymentRecords: [], 
+                        options: [
+                            { amount: 100, image: `../images/100.png` },
+                            { amount: 500, image: `../images/500.png`},
+                            { amount: 1000, image: `../images/1000.png` }
+                        ],
+                        addForm: {
+                            
+                        }
+                    };
+                },
+                methods: {
+                    purchase(amount) {
+                        this.addForm = {
+                            MerchantID: '@ViewData["MerchantID"]',
+                            MerchantOrderNo: '@ViewData["MerchantOrderNo"]',
+                            ItemDesc: `儲值 ${amount} 點`,
+                            Amt: `${amount}`,
+                            ExpireDate: '@ViewData["ExpireDate"]',
+                            ReturnURL: '@ViewData["ReturnURL"]',
+                            CustomerURL: '@ViewData["CustomerURL"]',
+                            NotifyURL: '@ViewData["NotifyURL"]',
+                            ClientBackURL: '@ViewData["ClientBackURL"]',
+                            Email: 'xxxx@gmail.com'
+                        };
+
+                        this.SendToNewebPay('ChannelID');
+                    },
+                    SendToNewebPay(ChannelID) {
+                        var self = this;
+
+                        // 組合表單資料
+                        var postData = {
+                            ChannelID: ChannelID,
+                            MerchantID: self.addForm.MerchantID,
+                            MerchantOrderNo: self.addForm.MerchantOrderNo,
+                            ItemDesc: self.addForm.ItemDesc,
+                            Amt: self.addForm.Amt,
+                            ExpireDate: self.addForm.ExpireDate,
+                            ReturnURL: self.addForm.ReturnURL,
+                            CustomerURL: self.addForm.CustomerURL,
+                            NotifyURL: self.addForm.NotifyURL,
+                            ClientBackURL: self.addForm.ClientBackURL,
+                            Email: self.addForm.Email
+                        };
+
+                        // 使用 jQuery Ajax 傳送至後端
+                        $.ajax({
+                            url: '@Url.Content("~/Payment/SendToNewebPay")',
+                            method: 'POST',
+                            dataType: 'json',
+                            data: { inModel: postData, __RequestVerificationToken: $('@Html.AntiForgeryToken()').val() },
+                            success: function (returnObj) {
+                                // 呼叫藍新金流 API
+                                const form = document.createElement('form');
+                                form.method = 'post';
+                                form.action = 'https://ccore.newebpay.com/MPG/mpg_gateway'; // 藍新金流驗證網址(測試環境)
+
+                                for (const key in returnObj) {
+                                    if (returnObj.hasOwnProperty(key)) {
+                                        const hiddenField = document.createElement('input');
+                                        hiddenField.type = 'hidden';
+                                        hiddenField.name = key;
+                                        hiddenField.value = returnObj[key];
+                                        form.appendChild(hiddenField);
+                                    }
+                                }
+                                document.body.appendChild(form);
+                                form.submit();
+                            },
+                            error: function (err) {
+                                alert(err.status + " " + err.statusText + '\n' + err.responseText);
+                            }
+                        });
+                    },
+                    getMemberData() {
+                        fetch('/Payment/GetMemberData')
+                            .then(response => response.json())
+                            .then(data => {
+                                this.isLoggedin = data.isLoggedin;
+                                this.memberId = data.memberId;
+                                this.memberPoint = data.memberPoint;
+                            })
+                            .catch(error => {
+                                console.error('發生錯誤:', error);
+                            });
+                    },
+                    getPaymentRecords() {
+                        fetch('/Payment/GetPaymentRecords')
+                            .then(response => response.json())
+                            .then(data => {
+                                this.paymentRecords = data;
+                            })
+                            .catch(error => {
+                                console.error('發生錯誤:', error);
+                            });
+                    },
+
+                },         
+                mounted() {
+                    this.getMemberData();
+                }
+
+            });
+            app.mount('#app');
+        </script>
+    }
+</body>
+</html>
+
+

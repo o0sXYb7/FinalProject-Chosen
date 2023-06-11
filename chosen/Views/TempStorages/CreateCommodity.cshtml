@@ -1,0 +1,91 @@
+﻿@model chosen.Models.TempStoragesViewModel
+
+@{
+    ViewData["Title"] = "創建商品";
+}
+
+<h2>創建商品</h2>
+
+<p>一番賞名稱: @Model.PrizeName</p>
+<p>倉庫數量: @Model.PrizeQuantity</p>
+
+<form id="saveForm" method="post">
+    @*前為action 後為Controller*@
+    @*<div asp-validation-summary="All" class="text-danger"></div>*@
+    <div class="form-group">
+        <label asp-for="Commodity.CommodityName" class="control-label"></label>
+        <input id="Commodity_Name" asp-for="Commodity.CommodityName" class="form-control" />
+        <span asp-validation-for="Commodity.CommodityName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Commodity.CommodityQuantity" class="control-label"></label>
+        <input id="Commodity_Quantity" asp-for="Commodity.CommodityQuantity" class="form-control" />
+        <span asp-validation-for="Commodity.CommodityQuantity" class="text-danger" id="Commodity_Quantity_span"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Commodity.CommodityUnitPrice" class="control-label"></label>
+        <input id="Commodity_UnitPrice" asp-for="Commodity.CommodityUnitPrice" class="form-control" />
+        <span asp-validation-for="Commodity.CommodityUnitPrice" class="text-danger"></span>
+    </div>
+    <br />
+    <div class="form-group">
+        <input id="TempId"  asp-for="Commodity.TempStorageId" value="@Model.TempStorageId" class="form-control" />
+        <input id="TempId" asp-for="Commodity.MemberId" value="@Model.MemberId" class="form-control" />
+        <input id="TempId" asp-for="Commodity.OnShelves" value="True" class="form-control" />
+        <input id="TempId" asp-for="Commodity.Deadline" value="@Model.Deadline" class="form-control" />
+        <input id="TempId"  asp-for="TempStorageId" value="@Model.TempStorageId" class="form-control" />
+        <input id="TempId"  asp-for="MemberId" value="@Model.MemberId" class="form-control" />
+        <input id="TempId"  asp-for="PrizeName" value="@Model.PrizeName" class="form-control" />
+        <input id="TempId"  asp-for="PrizeQuantity" value="@Model.PrizeQuantity" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input id="savefr" type="submit" value="上架" class="btn btn-primary" />
+    </div>
+
+</form>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $(document).ready(function () {
+                $("#Commodity_Quantity").on('input', function () {
+                    var maxQty = @Model.PrizeQuantity;
+                    var inputQty = $(this).val();
+
+                    //if (inputQty > maxQty) {
+                    //    $(this).val(maxQty);
+                    //    $("#Commodity_Quantity_span").text("上架數量不能大於暫存倉中的數量。");
+                    //}
+                });
+            });
+
+            $("#savefr").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("SaveCommodity","Commodities")",
+                    data: $('#saveForm').serialize(),
+                    async: false, //設置為同步，才能立即收到回應
+                    //data: {
+                    //    TempId: TempId, ProductName: ProductName, Quantity:
+                    //        Quantity, UnitPrice: UnitPrice
+                    //},
+                    success: function (response) {
+                        if (response.success === false) {
+                            alert(response.message);
+                        } else {
+                            // 成功的情况
+                            alert(response.message);
+                        }
+
+                    },
+                    error: function () {
+                        // 錯誤的情况
+                    }
+                });
+            });
+        });
+    </script>
+}
+

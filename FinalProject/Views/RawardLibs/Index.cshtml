@@ -1,0 +1,440 @@
+﻿<div id="app">
+    <div class="table-header mb-2">
+        <h3 class="fw-bolder">
+            一番賞資料庫
+        </h3>
+    </div>
+
+    <div class="d-flex">
+        <a @@click="clrarModal()" class="btn btn-success text-white mb-2" data-bs-toggle="modal" data-bs-target="#showDetail">新增資料庫</a>
+    </div>
+
+    <div class="d-flex mb-2">
+
+        <div class="d-flex align-items-end me-auto">
+            <span style="min-width:35px">每頁:</span>
+            <select class="form-select form-select-sm" @@change="selectPerPage" v-model="savedPageLength">
+                <option v-for="(item,index) in perpage" :key="index" :value="item">{{item}}</option>
+            </select>
+            <span>筆</span>
+        </div>
+
+        <div class="d-flex">
+            <select class="form-select form-select-sm" v-model.trim="nowFilter">
+                <option v-for="(item,index) in filterList" :key="index" :value="item">{{item}}</option>
+            </select>
+            <div class="input-group input-group-merge" style="min-width:250px">
+                <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
+                <input type="text"
+                       class="form-control"
+                       placeholder="Search..."
+                       aria-label="Search..."
+                       aria-describedby="basic-addon-search31"
+                       v-model="searchInput"
+                       @@keyup="filterDataPage" />
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="mainTable"
+               class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th class="center">
+                        <label>
+                            <input type="checkbox" />
+                            <span class="lbl"></span>
+                        </label>
+                    </th>
+                    <th>系列</th>
+                    <th>名稱</th>
+                    <th>功能</th>
+                    <th>細節項目</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr v-for="item in filterPageData">
+                        <td class="center">
+                            <label>
+                                <input type="checkbox" />
+                                <span class="lbl"></span>
+                            </label>
+                        </td>
+                        <td>{{item.series}}</td>
+                        <td>{{item.name}}</td>
+                        <td>
+                            <a @@click="openModelToUpdate(item.rawardId)" data-bs-toggle="modal" data-bs-target="#showDetail"><i class="tf-icons bx bx-edit-alt"></i></a> |
+                            <a @@click="deleteRawardLibs(item.rawardId)"><i class="tf-icons bx bx-trash text-danger"></i></a>
+                        </td>
+                        <td>
+                            <a @@click="goToDetail(item.rawardId)"><i class="tf-icons bx bx-detail"></i></a>
+                        </td>
+                    </tr>              
+            </tbody>           
+        </table>       
+    </div>
+
+    <div class="col-md justify-content-center" :class="{'d-none':loading,'d-flex':!loading}">
+        <div class="demo-inline-spacing">
+            <div class="spinner-border spinner-border-lg text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-end flex-wrap">
+
+            <li :class="{'disabled':nowPage==1,'page-item':true,'prev':true}" @@click="nowPage>1 ? nowPage-- : nowPage =1">
+                <a class="page-link">
+                    <i class="tf-icon bx bx-chevrons-left"></i>
+                </a>
+            </li>
+
+            <li :class="{'active':item==nowPage,'page-item':true}" v-for="item in paginationNum" @@click="nowPage = item">
+                <a class="page-link">{{item}}</a>
+            </li>
+
+            <li :class="{'disabled':nowPage==paginationNum,'page-item':true,'next':true}" @@click="nowPage<paginationNum ? nowPage++ : nowPage =paginationNum">
+                <a class="page-link">
+                    <i class="tf-icon bx bx-chevrons-right"></i>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+
+    <!-- Modal -->
+    <div class="modal fade" id="showDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modalContext">
+                <form asp-controller="RawardLibs" asp-action="Edit">
+                    
+                    <div class="modal-header">
+                        <template v-if="NowSelectId != null">
+                            <h4 class="modal-title fw-bolder" id="showDetailLabel">資料修改</h4>
+                        </template>
+                        <template v-else>
+                            <h4 class="modal-title fw-bolder" id="showDetailLabel">資料新增</h4>
+                        </template>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table-specil">
+                            <tbody>
+                                <tr>
+                                    <th>系列</th>
+                                    <td>
+                                        <input class="form-control" v-model="RawardSeries" />
+                                        <span class="text-danger">{{seriesErrorMessage}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>名稱</th>
+                                    <td>
+                                        <input class="form-control" v-model="RawardName" />
+                                        <span class="text-danger">{{nameErrorMessage}}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <template v-if="NowSelectId != null">
+                            <button @@click="updataRawardLib(NowSelectId)" type="button" class="btn btn-primary text-white">修改</button>
+                        </template>
+                        <template v-else>
+                            <button @@click="createRawardLib()" type="button" class="btn btn-primary text-white">存檔</button>
+                        </template>
+                        <button @@click="clrarModal()" type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">關閉</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section Scripts 
+{      
+  <script>       
+        let vueApp = {
+            
+            data(){
+                return {
+                    //初始資料
+                    dbData:[],
+                    dbDataLen: 0,
+                    //過濾項目
+                    filterList:["全部","系列","名稱"],
+                    nowFilter:"全部",
+                    searchInput:"",
+                    //MODAL目前顯示資料
+                    RawardSeries:'',
+                    RawardName:'',
+                    NowSelectId:null,
+                    //錯誤訊息
+                    ErrorTitle:[],
+                    ErrorMessage:[],
+                    //pagination
+                    nowPage:1,
+                    paginationNum:null,
+                    //per page
+                    savedPageLength:null,
+                    defaultPageLength:10,
+                    perpage:[10,25,50,100],
+                    //loading control
+                    loading:true,
+                }
+            },            
+            methods:{              
+                getCookie(name) {
+                    // 取得 Cookie
+                    let cookieValue = null;
+                    if (document.cookie && document.cookie !== '') {
+                        let cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            let cookie = cookies[i].trim();
+                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                },
+                setCookie(name, value, days) {
+                    // 設定 Cookie
+                    let expires = '';
+                    if (days) {
+                        let date = new Date();
+                        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                        expires = '; expires=' + date.toUTCString(); //存入cookie中的過期時間
+                    }
+                    document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/';
+                },
+                getRawardLibs(){
+                    let _this = this;
+                    _this.loading = false;
+                    axios.get(`@Url.Action("getRawardLibs","RawardLibs")`)
+                        .then((res) => {
+                            //console.log(res.data);
+                            _this.dbData = res.data;
+                            _this.dbDataLen = res.data.length;
+
+                            //初始pagation
+                            _this.filterDataPage();
+                            _this.loading = true;
+                        });
+                },
+                openModelToUpdate(rawardId){
+                    let _this = this;
+                    _this.clrarModal();
+                    axios.get(`@Url.Action("OPenModalToUpdate","RawardLibs")/${rawardId}`)
+                        .then((res) => {
+                            _this.NowSelectId = res.data.rawardId;
+                            _this.RawardSeries = res.data.series;
+                            _this.RawardName = res.data.name;
+                        });
+                },
+                updataRawardLib(rawardId) {
+                    let _this = this;
+                    
+                    let request = {
+                        RawardId: _this.NowSelectId,
+                        Series: _this.RawardSeries,
+                        Name: _this.RawardName,
+                    };
+
+                    axios.defaults.headers.common['RequestVerificationToken'] = $('input[name="__RequestVerificationToken"]').val();
+                    axios.put(`@Url.Action("UpdateRawardLibs","RawardLibs")/${rawardId}`, request)
+                        .then((res) => {
+                            $('#showDetail').modal('hide');
+                            _this.getRawardLibs();                           
+                        })
+                        .catch((err) => {
+                            //console.log(err.response.data);
+                            _this.ErrorTitle = Object.keys(err.response.data);
+                            let ArratList = [];
+                            for (let item in err.response.data) {
+                                ArratList.push(err.response.data[item]);
+                            }
+                            _this.ErrorMessage = ArratList;
+
+                        });
+                },
+                deleteRawardLibs(rawardId) {
+                    let _this = this;
+                    Swal.fire({
+                        title: '您確定要刪除此筆資料?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d15b47',
+                        cancelButtonColor: '#abbac3',
+                        confirmButtonText: '確認'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            axios.delete(`@Url.Action("Delete","RawardLibs")/${rawardId}`)
+                            .then((res) => {
+                                //console.log(res)
+                                Swal.fire(
+                                    `${res.data == "success" ? "資料刪除成功!" : "資料刪除失敗!"}`,
+                                    '',
+                                    `${res.data == "success" ? "success" : "error"}`
+                                    ).then((res) => {
+                                        if (res.isConfirmed) {
+                                        $('#showDetail').modal('hide');
+                                        _this.getRawardLibs();                                       
+                                    }
+                                })                            
+                            });                          
+                        }
+                    })
+                },
+                goToDetail(rawardId) {
+                    let _this = this;
+                    axios.get(`@Url.Action("Index","RawardItems")/${rawardId}`)
+                        .then((res) => {
+                            window.location.href = res.request.responseURL;
+                        });
+                },
+                clrarModal() {
+                    let _this = this;
+                    _this.RawardSeries = '';
+                    _this.RawardName = '';
+                    _this.NowSelectId = null;
+                    _this.ErrorTitle = [];
+                    _this.ErrorMessage = [];
+                },
+                createRawardLib(){
+                    let _this = this;
+
+                    let request = {                       
+                        Series: _this.RawardSeries,
+                        Name: _this.RawardName,
+                    };
+
+                    axios.defaults.headers.common['RequestVerificationToken'] = $('input[name="__RequestVerificationToken"]').val();
+                    axios.post(`@Url.Action("Create","RawardLibs")`, request)
+                        .then((res) => {
+                            $('#showDetail').modal('hide');
+                            _this.getRawardLibs();
+                            _this.clrarModal();
+                        })
+                        .catch((err) => {
+                            //console.log(err.response.data);
+                            _this.ErrorTitle = Object.keys(err.response.data);
+                            let ArratList = [];
+                            for (let item in err.response.data) {
+                                ArratList.push(err.response.data[item]);
+                            }
+                            _this.ErrorMessage = ArratList;
+
+                        });
+                },
+                selectPerPage(e){
+                    let _this = this;
+                    let selectPerPage = parseInt(e.target.value);
+                    //console.log(selectPerPage);
+                    _this.setCookie('datatablePageLength', selectPerPage, 365);
+                    _this.savedPageLength = selectPerPage;
+                    _this.searchInput = "";
+                    _this.filterDataPage();
+                },
+                filterDataPage(){
+                    let _this = this;
+                    _this.nowPage = 1;
+                    _this.paginationNum = Math.ceil(_this.filterdbData.length / _this.savedPageLength);
+                },
+
+            },
+            mounted() {
+                let _this = this;
+
+                //每頁幾筆的內容
+                let getCookiePage = _this.getCookie('datatablePageLength');
+
+                if (getCookiePage == null) {
+                    _this.savedPageLength = _this.defaultPageLength;
+                    _this.setCookie('datatablePageLength', _this.savedPageLength, 365);
+                }else
+                {
+                    _this.savedPageLength = parseInt(getCookiePage);
+                }                              
+                _this.getRawardLibs();                
+            },
+            computed:{
+                filterdbData() {
+                    let _this = this;
+                    let filterData = [];
+
+                    switch (this.nowFilter) {
+                        case "全部":
+                            for (let item of _this.dbData) {
+                                if (item.series.includes(_this.searchInput) || item.name.includes(_this.searchInput)) {
+                                    filterData.push(item)
+                                }
+                            }
+                            break;
+                        case "系列":
+                            for (let item of _this.dbData) {
+                                if (item.series.includes(_this.searchInput)) {
+                                    filterData.push(item)
+                                }
+                            }
+                            break;
+                        case "名稱":
+                            for (let item of _this.dbData) {
+                                if (item.name.includes(_this.searchInput)) {
+                                    filterData.push(item)
+                                }
+                            }
+                            break;
+                    }
+                    return filterData
+                },
+                filterPageData() {
+                    let firstNum = (this.nowPage - 1) * this.savedPageLength;
+                    let lastNum;
+                    let filterData = this.filterdbData;
+                    let filterPageData = [];
+
+                    if ((this.nowPage * this.savedPageLength) < this.filterdbData.length) {
+                        lastNum = this.nowPage * this.savedPageLength;
+                    } else {
+                        lastNum = this.filterdbData.length;
+                    }
+
+                    for (let i = firstNum; i < lastNum; i++) {
+                        filterPageData.push(filterData[i]);
+                    }
+
+                    return filterPageData;
+                },
+                seriesErrorMessage(){
+                    let hasTitle = this.ErrorTitle.some(e => e.includes("Series"));
+                    if (hasTitle) {
+                        let index = this.ErrorTitle.indexOf("Series");
+                        let msg = this.ErrorMessage[index].join(", ")
+                        return msg
+                    }else{
+                        return
+                    }
+                },
+                nameErrorMessage() {
+                    let hasTitle = this.ErrorTitle.some(e => e.includes("Name"));
+                    if (hasTitle) {
+                        let index = this.ErrorTitle.indexOf("Name");
+                        let msg = this.ErrorMessage[index].join(", ")
+                        return msg
+                    } else {
+                        return
+                    }
+                },
+            },
+        };
+
+        let app = Vue.createApp(vueApp).mount("#app");     
+  </script>
+}

@@ -1,0 +1,46 @@
+﻿@model chosen.Models.TempStoragesViewModel
+
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">新增商品</h5>
+    <div>
+        <p>一番賞名稱: @Model.PrizeName</p>
+        <p>一番賞數量: @Model.PrizeQuantity</p>
+        @Model.Deadline 
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <form id="CreateCommodityForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Commodity.CommodityName" class="control-label"></label>
+            <input id="Commodity_Name" asp-for="Commodity.CommodityName" class="form-control" />
+            <span asp-validation-for="Commodity.CommodityName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Commodity.CommodityQuantity" class="control-label"></label>
+            <input id="Commodity_Quantity" asp-for="Commodity.CommodityQuantity" class="form-control" />
+            <span asp-validation-for="Commodity.CommodityQuantity" class="text-danger" id="Commodity_Quantity_span"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Commodity.CommodityUnitPrice" class="control-label"></label>
+            <input id="Commodity_UnitPrice" asp-for="Commodity.CommodityUnitPrice" class="form-control" />
+            <span asp-validation-for="Commodity.CommodityUnitPrice" class="text-danger"></span>
+        </div>
+        <div class="form-group" hidden="hidden">
+            <input asp-for="Commodity.TempStorageId" value="@Model.TempStorageId" class="form-control" />
+            <input asp-for="Commodity.MemberId" value="@Model.MemberId" class="form-control" />
+            <input asp-for="Commodity.OnShelves" value="True" class="form-control" />
+            <input asp-for="Commodity.Deadline" value="@Model.Deadline.ToString("yyyy-MM-dd HH:mm:ss")" class="form-control" />
+            <input asp-for="TempStorageId" value="@Model.TempStorageId" class="form-control" />
+            <input asp-for="MemberId" value="@Model.MemberId" class="form-control" />
+            <input asp-for="PrizeName" value="@Model.PrizeName" class="form-control" />
+            <input asp-for="PrizeQuantity" value="@Model.PrizeQuantity" class="form-control" />
+            <input asp-for="Deadline" value="@Model.Deadline.ToString("yyyy-MM-dd HH:mm:ss")" class="form-control" />
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+    <button id="createPost" type="button" class="btn btn-primary">確認</button>
+</div>

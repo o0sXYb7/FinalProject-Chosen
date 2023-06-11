@@ -1,0 +1,333 @@
+﻿<div id="app">
+    <div class="table-header mb-2">
+        <h3 class="fw-bolder">
+            抽獎紀錄
+        </h3>
+    </div>
+
+    <div class="d-flex mb-2">
+
+        <div class="d-flex align-items-end me-auto">
+            <span style="min-width:35px">每頁:</span>
+            <select class="form-select form-select-sm" @@change="selectPerPage" v-model="savedPageLength">
+                <option v-for="(item,index) in perpage" :key="index" :value="item">{{item}}</option>
+            </select>
+            <span>筆</span>
+        </div>
+
+        <div class="d-flex">
+            <select class="form-select form-select-sm" v-model.trim="nowFilter">
+                <option v-for="(item,index) in filterList" :key="index" :value="item">{{item}}</option>
+            </select>
+            <div class="input-group input-group-merge" style="min-width:250px">
+                <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
+                <input type="text"
+                       class="form-control"
+                       placeholder="Search..."
+                       aria-label="Search..."
+                       aria-describedby="basic-addon-search31"
+                       v-model="searchInput"
+                       @@keyup="filterDataPage" />
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="mainTable"
+               class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th class="center">
+                        <label>
+                            <input type="checkbox" />
+                            <span class="lbl"></span>
+                        </label>
+                    </th>
+                    <th>獎池</th>
+                    <th>廠商</th>
+                    <th>會員</th>
+                    <th>消費</th>
+                    <th>抽獎日期</th>
+                    <th>結算日期</th>
+                    <th>結算</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr v-for="item in filterPageData">
+                    <td class="center">
+                        <label>
+                            <input type="checkbox" />
+                            <span class="lbl"></span>
+                        </label>
+                    </td>
+                    <td>{{item.showRawardName}}</td>
+                    <td>{{item.factoryName}}</td>
+                    <td>{{item.memberName}}</td>
+                    <td>{{item.point}}</td>
+                    <td>{{formattedDate(item.drawTime)}}</td>
+                    <td>{{formattedDateSet(item.settlementTime)}}</td>
+                    <td>
+                        <template v-if="item.settlement == false">
+                            <a class="btn btn-danger btn-sm text-white" @@click="settlement(item)">結算</a>
+                        </template>
+                        <template v-else>
+                            <a class="btn btn-secondary btn-sm text-white disabled">關帳</a>
+                        </template>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md justify-content-center" :class="{'d-none':loading,'d-flex':!loading}">
+        <div class="demo-inline-spacing">
+            <div class="spinner-border spinner-border-lg text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-end flex-wrap">
+
+            <li :class="{'disabled':nowPage==1,'page-item':true,'prev':true}" @@click="nowPage>1 ? nowPage-- : nowPage =1">
+                <a class="page-link">
+                    <i class="tf-icon bx bx-chevrons-left"></i>
+                </a>
+            </li>
+
+            <li :class="{'active':item==nowPage,'page-item':true}" v-for="item in paginationNum" @@click="nowPage = item">
+                <a class="page-link">{{item}}</a>
+            </li>
+
+            <li :class="{'disabled':nowPage==paginationNum,'page-item':true,'next':true}" @@click="nowPage<paginationNum ? nowPage++ : nowPage =paginationNum">
+                <a class="page-link">
+                    <i class="tf-icon bx bx-chevrons-right"></i>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+@section Scripts
+    {
+    <script>
+        let vueApp = {
+
+            data() {
+                return {
+                    //初始資料
+                    dbData: [],
+                    dbDataLen: 0,
+                    //過濾項目
+                    filterList: ["全部", "獎池", "廠商","會員"],
+                    nowFilter: "全部",
+                    searchInput: "",
+                    //MODAL目前顯示資料
+                    RawardSeries: '',
+                    RawardName: '',
+                    NowSelectId: null,
+                    //錯誤訊息
+                    ErrorTitle: [],
+                    ErrorMessage: [],
+                    //pagination
+                    nowPage: 1,
+                    paginationNum: null,
+                    //per page
+                    savedPageLength: null,
+                    defaultPageLength: 10,
+                    perpage: [10, 25, 50, 100],
+                    //loading control
+                    loading: true,
+                }
+            },
+            methods: {
+                getCookie(name) {
+                    // 取得 Cookie
+                    let cookieValue = null;
+                    if (document.cookie && document.cookie !== '') {
+                        let cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            let cookie = cookies[i].trim();
+                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                },
+                setCookie(name, value, days) {
+                    // 設定 Cookie
+                    let expires = '';
+                    if (days) {
+                        let date = new Date();
+                        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                        expires = '; expires=' + date.toUTCString(); //存入cookie中的過期時間
+                    }
+                    document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/';
+                },
+                getRawardLibs() {
+                    let _this = this;
+                    _this.loading = false;
+                    axios.get(`@Url.Action("getRawardLibs","DrawRecords")`)
+                        .then((res) => {
+                            //console.log(res.data);
+                            _this.dbData = res.data;
+                            _this.dbDataLen = res.data.length;
+
+                            //初始pagation
+                            _this.filterDataPage();
+                            _this.loading = true;
+                        });
+                },
+                settlement(item) {
+                    let _this = this;
+                    let request = {
+                        DrawId: item.drawId,
+                    };
+                    Swal.fire({
+                        title: '您確定要關帳?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d15b47',
+                        cancelButtonColor: '#abbac3',
+                        confirmButtonText: '確認'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            axios.put(`@Url.Action("UpdateRawardLibs","DrawRecords")`, request)
+                                .then((res) => {
+                                    console.log(res.data.success);
+                                    _this.getRawardLibs();
+                                })
+                                .catch((err) => {
+                                    //console.log(err);
+                                });
+                        }
+                    })
+                },               
+                clrarModal() {
+                    let _this = this;
+                    _this.RawardSeries = '';
+                    _this.RawardName = '';
+                    _this.NowSelectId = null;
+                    _this.ErrorTitle = [];
+                    _this.ErrorMessage = [];
+                },
+                selectPerPage(e) {
+                    let _this = this;
+                    let selectPerPage = parseInt(e.target.value);
+                    //console.log(selectPerPage);
+                    _this.setCookie('datatablePageLength', selectPerPage, 365);
+                    _this.savedPageLength = selectPerPage;
+                    _this.searchInput = "";
+                    _this.filterDataPage();
+                },
+                filterDataPage() {
+                    let _this = this;
+                    _this.nowPage = 1;
+                    _this.paginationNum = Math.ceil(_this.filterdbData.length / _this.savedPageLength);
+                },
+                formattedDate(item) {
+                    if(item != null){
+                        const date = new Date(item);
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${year}/${month}/${day}`;                    
+                    }else{
+                        return "無日期";
+                    }
+                },
+                formattedDateSet(item) {
+                    if (item != null) {
+                        const date = new Date(item);
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${year}/${month}/${day}`;
+                    } else {
+                        return "未結算";
+                    }
+                },
+                settlementType(){
+                
+                },
+            },
+            mounted() {
+                let _this = this;
+
+                //每頁幾筆的內容
+                let getCookiePage = _this.getCookie('datatablePageLength');
+
+                if (getCookiePage == null) {
+                    _this.savedPageLength = _this.defaultPageLength;
+                    _this.setCookie('datatablePageLength', _this.savedPageLength, 365);
+                } else {
+                    _this.savedPageLength = parseInt(getCookiePage);
+                }
+                _this.getRawardLibs();
+            },
+            computed: {
+                filterdbData() {
+                    let _this = this;
+                    let filterData = [];
+
+                    switch (this.nowFilter) {
+                        case "全部":
+                            for (let item of _this.dbData) {
+                                if (item.showRawardName.includes(_this.searchInput) || item.factoryName.includes(_this.searchInput) || item.memberName.includes(_this.searchInput)) {
+                                    filterData.push(item)
+                                }
+                            }
+                            break;
+                        case "獎池":
+                            for (let item of _this.dbData) {
+                                if (item.showRawardName.includes(_this.searchInput)) {
+                                    filterData.push(item)
+                                }
+                            }
+                            break;
+                        case "廠商":
+                            for (let item of _this.dbData) {
+                                if (item.factoryName.includes(_this.searchInput)) {
+                                    filterData.push(item)
+                                }
+                            }
+                            break;
+                        case "會員":
+                            for (let item of _this.dbData) {
+                                if (item.memberName.includes(_this.searchInput)) {
+                                    filterData.push(item)
+                                }
+                            }
+                            break;
+                    }
+                    return filterData
+                },
+                filterPageData() {
+                    let firstNum = (this.nowPage - 1) * this.savedPageLength;
+                    let lastNum;
+                    let filterData = this.filterdbData;
+                    let filterPageData = [];
+
+                    if ((this.nowPage * this.savedPageLength) < this.filterdbData.length) {
+                        lastNum = this.nowPage * this.savedPageLength;
+                    } else {
+                        lastNum = this.filterdbData.length;
+                    }
+
+                    for (let i = firstNum; i < lastNum; i++) {
+                        filterPageData.push(filterData[i]);
+                    }
+
+                    return filterPageData;
+                },
+            },
+        };
+
+        let app = Vue.createApp(vueApp).mount("#app");
+    </script>
+}

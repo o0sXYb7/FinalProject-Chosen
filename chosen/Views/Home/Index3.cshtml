@@ -1,0 +1,247 @@
+﻿
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<section class="hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="hero__slider owl-carousel">
+                    <div class="hero__items set-bg" data-setbg="img/hero/01.jpg">
+                        <div class="row">
+                        </div>
+                    </div>
+                    <div class="hero__items set-bg" data-setbg="img/hero/02.jpg">
+                        <div class="row">
+                        </div>
+                    </div>
+                    <div class="hero__items set-bg" data-setbg="img/hero/03.jpg">
+                        <div class="row">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <span id="tab-1">最新資訊</span>
+                <span id="tab-2">活動總覽</span>
+                <span id="tab-3">商城</span>
+                <span id="tab-4">會員專區</span>
+
+                <!-- 頁籤按鈕 -->
+                <div id="tab">
+                    <ul>
+                        <li><a href="#tab-1">最新資訊</a></li>
+                        <li><a href="#tab-2">活動總覽</a></li>
+                        <li><a href="#tab-3">商城</a></li>
+                        <li><a href="#tab-4">會員專區</a></li>
+                    </ul>
+
+                    <!-- 頁籤的內容區塊 -->
+                    <div class="tab-content-1">
+                        <ul style="padding-top:1px;">
+                            @foreach(var item in Model)
+                            {
+                                <a asp-controller="BreakingNews" asp-action="Description" asp-route-id="@item.BreakingNewsId" >
+                                    @item.Title</a>
+                                    <br />
+                            }
+                        </ul>
+                    </div>                    
+                    <div class="tab-content-2">
+                        <p>頁面1顯示的內容</p>
+                    </div>
+                    <div class="tab-content-3">
+                        <p>頁面2顯示的內容</p>
+                    </div>
+                    <div class="tab-content-4">
+                        <p>頁面3顯示的內容</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Hero Section End -->
+<!-- Middle Section Begin -->
+<section class="categories" style="padding: 20px">
+    <div class="container">
+        <div class="row">
+            <div class="categories__slider owl-carousel-2">
+                <div class="col-lg-3">
+                    <div class="categories__item set-bg" data-setbg="img/categories/cat-1.jpg">
+                        <h5><a href="#">BE@RBRICK</a></h5>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="categories__item set-bg" data-setbg="img/categories/cat-2.jpg">
+                        <h5><a href="#">Funko</a></h5>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="categories__item set-bg" data-setbg="img/categories/cat-3.jpg">
+                        <h5><a href="#">Tamashii</a></h5>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="categories__item set-bg" data-setbg="img/categories/cat-4.jpg">
+                        <h5><a href="#">Good Smile</a></h5>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="categories__item set-bg" data-setbg="img/categories/cat-5.jpg">
+                        <h5><a href="#">Portrait.Of.Pirates</a></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Middle Section End -->
+<!-- Product Section Begin -->
+<section class="product spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="trending__product">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-8 col-sm-8">
+                            <div class="section-title">
+                                <h4>獎池列表</h4>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="btn__all">
+                                <a asp-area="" asp-controller="Home" asp-action="Prizepool" class="primary-btn">View All <span class="arrow_right"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6 product_banner">
+                            <div class="productdis">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg" data-setbg="img/trending/trend-1.jpg">
+                                    </div>
+                                    <div class="product__item__text">
+
+                                        <h5><a href="#">ANIPLEX 孤獨搖滾 後藤一里 小孤獨 波奇 後藤ひとり ぼっち 体育祭妄想Ver.</a></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 product_banner">
+                            <div class="productdis">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg" data-setbg="img/trending/trend-2.jpg">
+                                    </div>
+                                    <div class="product__item__text">
+
+                                        <h5><a href="#">KADOKAWA 1/7 我推的孩子 小愛 星野愛 PVC</a></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 product_banner">
+                            <div class="productdis">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg" data-setbg="img/trending/trend-3.jpg">
+                                    </div>
+                                    <div class="product__item__text">
+
+                                        <h5><a href="#">FURYU TENITOL 咒術迴戰 虎杖悠仁 ED Pose</a></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 product_banner">
+                            <div class="productdis">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg" data-setbg="img/trending/trend-4.jpg">
+                                    </div>
+                                    <div class="product__item__text">
+
+                                        <h5><a href="#">BANDAI 名將MOVIE REALIZATION 星際大戰 足輕帝國風暴兵 殘黨</a></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 product_banner">
+                            <div class="productdis">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg" data-setbg="img/trending/trend-5.jpg">
+                                    </div>
+                                    <div class="product__item__text">
+
+                                        <h5><a href="#">[特典版] Megahouse LOOKUP 地獄樂 畫眉丸＆山田淺右衛門佐切</a></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 product_banner">
+                            <div class="productdis">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg" data-setbg="img/trending/trend-6.jpg">
+                                    </div>
+                                    <div class="product__item__text">
+
+                                        <h5><a href="#">ANIPLEX+ 1/7 她來自煩星 福星小子 拉姆 PVC</a></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="product__sidebar">
+                    <div class="product__sidebar__view">
+                        <div class="section-title">
+                            <h5>熱門獎池</h5>
+                        </div>
+                        <ul class="filter__controls">
+                            <li class="active" data-filter="*">最新上架</li>
+                            <li data-filter=".week">熱門排行</li>
+                            <li data-filter=".month">評價最高</li>
+                            <li data-filter=".years">即將上架</li>
+                        </ul>
+                        <div class="filter__gallery">
+                            <div class="product__sidebar__view__item set-bg mix day years"
+                                 data-setbg="img/sidebar/tv-1.jpg">
+                                <h5><a href="#">Boruto: Naruto next generations</a></h5>
+                            </div>
+                            <div class="product__sidebar__view__item set-bg mix month week"
+                                 data-setbg="img/sidebar/tv-2.jpg">
+                                <h5><a href="#">The Seven Deadly Sins: Wrath of the Gods</a></h5>
+                            </div>
+                            <div class="product__sidebar__view__item set-bg mix week years"
+                                 data-setbg="img/sidebar/tv-3.jpg">
+                                <h5><a href="#">Sword art online alicization war of underworld</a></h5>
+                            </div>
+                            <div class="product__sidebar__view__item set-bg mix years month"
+                                 data-setbg="img/sidebar/tv-4.jpg">
+                                <h5><a href="#">Fate/stay night: Heaven's Feel I. presage flower</a></h5>
+                            </div>
+                            <div class="product__sidebar__view__item set-bg mix day"
+                                 data-setbg="img/sidebar/tv-5.jpg">
+                                <h5><a href="#">Fate stay night unlimited blade works</a></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Product Section End -->
+<!-- Search model Begin -->
+<div class="search-model">
+    <div class="h-100 d-flex align-items-center justify-content-center">
+        <div class="search-close-switch"><i class="icon_close"></i></div>
+        <form class="search-model-form">
+            <input type="text" id="search-input" placeholder="Search here.....">
+        </form>
+    </div>
+</div>
+<!-- Search model end -->

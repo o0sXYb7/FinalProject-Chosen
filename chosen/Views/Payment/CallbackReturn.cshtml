@@ -1,0 +1,64 @@
+﻿<div style="width:80%">
+    <h1>支付回傳訊息</h1>
+    <h3>接收參數:</h3>
+    <div id="receiveObj">@Html.Raw(ViewData["ReceiveObj"])</div>
+    <h3>交易訊息:</h3>
+    <div id="tradeInfo">@Html.Raw(ViewData["TradeInfo"])</div>
+    <!-- 将各个ViewData数据项创建对应的div -->
+    <div id="merchantOrderNo">@Html.Raw(ViewData["MerchantOrderNo"])</div>
+    <div id="status">@Html.Raw(ViewData["Status"])</div>
+    <div id="amt">@Html.Raw(ViewData["Amt"])</div>
+    <div id="tradeNo">@Html.Raw(ViewData["TradeNo"])</div>
+    <div id="itemDesc">@Html.Raw(ViewData["ItemDesc"])</div>
+    <div id="paymentType">@Html.Raw(ViewData["PaymentType"])</div>
+    <div id="payTime">@Html.Raw(ViewData["PayTime"])</div>
+    <div id="card6No">@Html.Raw(ViewData["Card6No"])</div>
+    <div id="card4No">@Html.Raw(ViewData["Card4No"])</div>
+    <div id="exp">@Html.Raw(ViewData["Exp"])</div>
+</div>
+
+@section Scripts{
+    <script>
+        // 获取需要发送的数据
+        var receiveObj = $("#receiveObj").html();
+        var tradeInfo = $("#tradeInfo").html();
+        var merchantOrderNo = $("#merchantOrderNo").html();
+        var status = $("#status").html();
+        var amt = $("#amt").html();
+        var tradeNo = $("#tradeNo").html();
+        var itemDesc = $("#itemDesc").html();
+        var paymentType = $("#paymentType").html();
+        var payTime = $("#payTime").html();
+        var card6No = $("#card6No").html();
+        var card4No = $("#card4No").html();
+        var exp = $("#exp").html();
+
+        // 使用AJAX发送数据到控制器方法
+        $.ajax({
+            type: "POST",
+            url: "/Payment/CallbackReturnToStore",
+            data: {
+                receiveObj: receiveObj,
+                tradeInfo: tradeInfo,
+                merchantOrderNo: merchantOrderNo,
+                status: status,
+                amt: amt,
+                tradeNo: tradeNo,
+                itemDesc: itemDesc,
+                paymentType: paymentType,
+                payTime: payTime,
+                card6No: card6No,
+                card4No: card4No,
+                exp: exp
+            },
+            success: function (response) {
+                // 请求成功时的处理逻辑
+                window.location.href = "/Payment/PaymentSuccessful";
+            },
+            error: function (error) {
+                // 请求失败时的处理逻辑
+                window.location.href = "/Payment/PaymentUnsuccessful";
+            }
+        });
+    </script>
+}

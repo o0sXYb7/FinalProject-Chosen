@@ -1,0 +1,418 @@
+﻿@section Styles{
+    <style>
+        .product__item{
+            margin-right:22px;
+        }
+
+        /* 清單區塊 */
+
+        .product__item__text {            
+            height: 120px;
+        }        
+
+        /* 獎池名稱 */
+        .product__item__text a {
+            color: black;
+            font-size: 20px;
+            font-weight: bold;            
+        }
+        
+        /* 價格 */
+        .price {
+            color: #66c0f4;
+            font-size: 18px;
+        }        
+
+        .form-control {
+            line-height: 30px;
+        }
+
+        .product__item img {
+            border-radius: 5px 5px 0 0;
+        }
+
+
+        /*分頁CSS*/
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .pagination ul {
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .pagination li {
+            margin: 0 5px;
+        }
+
+        .pagination li.active {
+            font-weight: bold;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            color: #000;
+        }
+
+        .pagination a:hover {
+            color: #aaa;
+        }
+
+        /*愛心*/
+        .HI {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .HI:hover {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .HI.fa-heart {
+            font-size: 30px;
+            color:#68BE8D;
+            /* 添加過渡效果，讓放大縮小的過程更平滑 */
+            /* transition: transform 0.3s; */
+        }
+
+        .HI.fa-heart-broken{
+            color:red;
+            font-size:30px;
+        }
+
+        .HI.fa-heart-broken:hover {
+            font-size: 30px;
+            display: inline-block;
+        }
+
+        /* 確認刪除視窗的外框 */
+        .delete-confirmation {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .delete-confirmation-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            overflow: hidden; /* 禁止頁面捲動 */
+        }
+
+        /* 標題樣式 */
+        .delete-confirmation h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        /* 按鈕樣式 */
+        .delete-confirmation .btn-wrapper {
+            margin-top: 20px;
+        }
+
+        .delete-confirmation .btn-wrapper button {
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .delete-confirmation .btn-wrapper button:hover {
+            background-color: #c0392b;
+        }
+
+        .productbox{
+            margin-bottom:15px;
+        }
+    </style>
+}
+@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">*@
+
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a asp-area="" asp-controller="Home" asp-action="index"><i class="fa fa-home"></i> 首頁</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Classification">分類</a>
+                    <span>願望清單</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- product begin -->
+
+<div class="container product spad" id="app">
+    <div class="row">
+        <div class="col-lg-12" style="height:35px;">
+            <div class="search-form" style="display: inline-flex; align-items: center;">
+                <div class="input-group">
+                    <input type="text"
+                           class="form-control"
+                           name="searchString"
+                           placeholder="請輸入商品關鍵字"
+                           v-model="searchString"
+                           @@keyup.enter="search()" />
+                    <div class="input-group-append">
+                        <button id="search" class="btn btn-outline-secondary" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- 新增每頁顯示數量的下拉式選單 -->
+            <div class="form-group" style="align-items: center;display: inline-flex;">
+                <div style="margin-top: auto;margin-left:10px;">
+                    <label for="perPage">每頁筆數：</label>
+                </div>
+                <div >
+                    <select id="perPage"
+                            class="form-control"
+                            v-model="perPage"
+                            @@change="updatePage(1)">
+                        <option value="8">8</option>
+                        <option value="16">16</option>
+                        <option value="32">32</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:30px">
+            <div class="col-lg-12">
+                <div class="trending__product" style="height: auto;">
+                    <div class="row">                        
+                        <div class="product__item" v-for="item in wishlists" :key="wishlists.ItemId">
+                            <div class="product__item__pic prize-img" @@click="goToDetail(item.ShowRawardId)" :style="{backgroundImage: GetImage(item.Image)}">
+                                <i class="HI fas fa-heart " onmouseover="changeIcon(this)" onmouseout="resetIcon(this)" @@click.stop="deleteWishlist($event, item.ItemId)"></i>
+                            </div>
+                            <div class="product__item__text prize-label">
+                                <ul>
+                                    <li>Active</li>
+                                    <li>Movie</li>
+                                </ul>
+                                <h5 class="prize-name">{{ item.Name }}</h5>
+                                <div class="prize">
+                                    <h5 class="prize-price">上架時間:{{ formatDate(item.CreateTime) }}</h5>
+                                </div><div class="prize">
+                                    <h5 class="prize-price">${{ item.OneDrawMoney }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <nav class="pagination" v-show="Math.ceil(wishlists.length / perPage) > 1">
+                            <ul class="pagination">
+                                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                                    <a class="page-link" href="javascript:void(0)" @@click="updatePage(currentPage - 1)"><i class="arrow_carrot-left"></i></a>
+                                </li>
+                                @*"Math.min(5, Math.ceil(wishlists.length / perPage))" 計算總頁數和 5 的最小值，以決定顯示的頁數範圍。*@
+                                <li v-for="page in Math.min(5, Math.ceil(wishlists.length / perPage))" :key="page" class="page-item" :class="{ active: currentPage === page }">
+                                    <a class="page-link" href="javascript:void(0)" @@click="updatePage(page)">{{ page }}</a>
+                                </li>
+                                <li class="page-item" :class="{ disabled: currentPage === Math.ceil(wishlists.length / perPage) }">
+                                    <a class="page-link" href="javascript:void(0)" @@click="updatePage(currentPage + 1)"><i class="arrow_carrot-right"></i></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+
+        //愛心
+        function changeIcon(element) {
+            element.classList.remove('fa-heart');
+            element.classList.add('fa-heart-broken');
+        }
+
+        function resetIcon(element) {
+            element.classList.remove('fa-heart-broken');
+            element.classList.add('fa-heart');        
+        }
+
+        //刪除前的彈出視窗
+        function showDeleteConfirmation() {
+            return new Promise((resolve) => {
+                const confirmationWrapper = document.createElement("div");
+                confirmationWrapper.className = "delete-confirmation-wrapper";
+
+                const confirmationBox = document.createElement("div");
+                confirmationBox.className = "delete-confirmation";
+
+                const buttonWrapper = document.createElement("div");
+                buttonWrapper.className = "btn-wrapper";
+
+                const title = document.createElement("h3");
+                title.textContent = "確定要刪除這個項目嗎？";
+                confirmationBox.appendChild(title);
+
+                const confirmButton = document.createElement("button");
+                confirmButton.textContent = "確認";
+                confirmButton.addEventListener("click", () => {
+                    resolve(true);
+                    confirmationWrapper.remove();
+                    document.body.style.overflow = ""; // 恢復頁面捲動
+                });
+                buttonWrapper.appendChild(confirmButton);
+
+                const cancelButton = document.createElement("button");
+                cancelButton.textContent = "取消";
+                cancelButton.addEventListener("click", () => {
+                    resolve(false);
+                    confirmationWrapper.remove();
+                    document.body.style.overflow = ""; // 恢復頁面捲動
+                });
+
+                buttonWrapper.appendChild(cancelButton);
+
+                confirmationBox.appendChild(buttonWrapper);
+                confirmationWrapper.appendChild(confirmationBox);
+
+                document.body.style.overflow = "hidden"; // 禁止頁面捲動
+                document.body.appendChild(confirmationWrapper);
+            });
+        }
+                
+        const app = Vue.createApp({
+            data() {
+                return {
+                    wishlists: [],
+                    filteredWishlists: [],
+                    searchString: '',
+                    currentPage: 1,
+                    perPage: 8,
+                };
+            },
+            methods: {
+                //刪除項目
+                async deleteWishlist(event, id) {
+                  try {
+                      console.log(id)
+                    // 阻止表單的預設提交行為
+                    event.preventDefault();
+
+                    // 彈出確認刪除的視窗
+                    const confirmed = await showDeleteConfirmation();
+                    if (!confirmed) {
+                        return; // 如果使用者取消了刪除操作，不執行後續的刪除請求
+                    }
+
+                    await axios.delete(`/Wishlists/Delete/${id}`);
+                    // 在成功刪除後，重新載入資料或更新頁面
+                    // 請根據您的需求進行適當的處理
+                    this.getWishlist();
+                  } catch (error) {
+                    console.error(error);
+                  }
+                },
+                async search() {
+                    // 搜尋wishlist
+                    // 如果搜尋框是空的，返回原本的搜尋結果
+                    try {
+                        const response = await axios.get('/Wishlists/GetWishlist');
+                        if (this.searchString === '') {
+                            this.wishlists = response.data;
+                        } else {
+                            this.wishlists = response.data.filter(wishlist =>
+                                wishlist.itemtitle.toLowerCase().includes(this.searchString.toLowerCase())
+                            );
+                        }
+                    }
+
+                    // 在搜尋後更新分頁相關數據
+                    //this.currentPage = 1;
+                    //this.filteredWishlists = this.paginate(this.wishlists);
+
+                    //try {
+                    //    const response = await axios.get('/Wishlists/GetWishlist');
+                    //    this.wishlists = response.data.filter(wishlist =>
+                    //        wishlist.itemtitle.toLowerCase().includes(this.searchString.toLowerCase())
+                    //    );                       
+                    //}  原始
+
+                    catch (error) {
+                        console.error(error);
+                    }
+                },
+                getWishlist() {
+                    // 在mounted時呼叫getWishlist方法取得wishlist資料
+                    try {
+                        axios.get('/Wishlists/GetWishlist').then((response) => {
+                            this.wishlists = response.data;
+                        });
+                        console.log(this.wishlists)
+                    } catch (error) {
+                        console.error(error);
+                    }
+                },
+                GetImage(img) {
+                    var full = `url(https://finalprojectbackend.azurewebsites.net/img/webDataPicture\/${img})`;
+                    console.log(full)
+                    return full;
+                },
+                //分頁功能
+                paginate(items) {
+                    const startIndex = (this.currentPage - 1) * this.perPage;
+                    const endIndex = startIndex + this.perPage;                    
+                    return this.wishlists.slice(startIndex, endIndex);
+                    //原                   
+                    //this.filteredWishlists = this.wishlists.slice(startIndex, endIndex);
+                },
+                updatePage(page) {
+                    this.currentPage = page;
+                    this.filteredWishlists = this.paginate(this.wishlists);
+                },
+                goToDetail(id) {
+                    axios.get(`/PrizePoolDetail/Index/${id}`).then((res) => {
+                        window.location.href = res.request.responseURL;
+                    });
+                },
+            },
+            computed: {
+                formatDate() {
+                    return function (dateString) {
+                        const date = new Date(dateString);
+                        const formattedDate = date.toLocaleString();
+                        return formattedDate;
+                    };
+                },
+            },
+            mounted() {
+                this.getWishlist();
+            }
+        });
+        // 掛載Vue應用程式
+        app.mount('#app');
+    </script>
+}

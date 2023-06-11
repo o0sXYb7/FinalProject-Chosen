@@ -1,0 +1,56 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.table-specil {
+    width:100%;
+}
+
+.nav-list > li > a {
+    padding: 0 16px 0 12px;
+}
+
+.dataTables_length {
+    margin-bottom:5px;
+}
+
+.dataTables_filter {
+    margin-bottom: 10px;
+}
+
+.table-specil textarea {
+    width:100%;
+    min-height:150px;
+}
+
+.swal2-container {
+    z-index:9999 !important;
+}
+
+a {
+    cursor:pointer;
+}
+
+.modal-dialog th, .modal-dialog td {
+    vertical-align:top;
+}
+
+.tox-promotion {
+    display:none;
+
+}

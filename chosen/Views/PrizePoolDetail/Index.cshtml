@@ -1,0 +1,295 @@
+﻿@section Styles{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.css" integrity="sha512-wR4oNhLBHf7smjy0K4oqzdWumd+r5/+6QO/vDda76MW5iug4PT7v86FoEkySIJft3XA0Ae6axhIvHrqwm793Nw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.css" integrity="sha512-6lLUdeQ5uheMFbWm3CP271l14RsX1xtx+J5x2yeIDkkiBpeVTNhTqijME7GgRKKi6hCqovwCoBTlRBEC20M8Mg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .my-slick-partial .slick-slide {
+            margin-right:10px;
+        }
+
+        .my-slick-main img, .my-slick-partial img{
+            border: 1px solid rgba(0,0,0,.08);
+            box-sizing: border-box;
+            box-shadow: 0px 0px 6px 0px rgba(41, 41, 41, 0.1);
+        }
+
+        .tag {
+            background-color: #e53637;
+            color:white;
+            margin-right:5px;
+            padding:5px 8px;
+            border-radius:5px;
+        }
+
+        .tag-secondary {
+            display:flex;
+            margin-bottom: 5px;
+        }
+
+        .tag-secondary span:nth-child(1) {
+            background-color: black;
+            color:white;
+            padding: 8px 13px;
+            border-radius: 8px 0 0 8px;
+        }
+
+        .tag-secondary span:nth-child(2) {
+            background-color: darkorange;
+            color: white;
+            padding: 8px 13px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .text-cancel {
+            text-decoration:line-through;
+            color:darkgray;
+        }
+
+        .table tfoot td:nth-child(1) {
+            border-radius: 0 0 0 20px;
+        }
+
+        .table tfoot td:nth-child(2) {
+            border-radius: 0 0 20px 0;
+        }
+
+        .title-line h3, .title-line img {
+            z-index:999;
+            background-color: #F6F7F8;
+        }
+
+        .title-line img{
+            padding-left:10px;
+        }
+
+        .title-line h3{
+            padding-right:10px
+        }
+
+        .title-line::before {
+            content:'';
+            background-color:darkgray;
+            width:98%;
+            height:2px;
+            position:absolute;
+            z-index:1;           
+        }
+    </style>
+}
+
+<div id="app">
+    <div class="container mt-4 mb-4">
+        <div class="row">
+            <div class="col-12 col-lg-5 mb-4">
+
+                <div class="my-slick-main mb-3">
+                    <template v-for="item in ImageList">
+                        <div class="p-3">
+                            <img class="m-auto" :src="createImage(item)" />
+                        </div>
+                    </template>
+                </div>
+                <div class="my-slick-partial">
+                    <template v-for="item in ImageList">
+                        <div class="p-1">
+                            <img class="m-auto" :src="createImage(item)" />
+                        </div>
+                    </template>
+                </div>
+              
+            </div>
+            <div class="col-12 col-lg-7">
+                <template v-for="item in RawardData">
+                    <div class="mb-2 d-flex">
+                        <span class="tag">{{item.Series}}</span>
+                        <span class="tag">{{item.FactoryName}}</span>
+                    </div>
+                    <h4 class="mb-3">{{item.Name}}</h4>
+                    <div class="mb-4 d-flex flex-wrap">
+                        <div class="mr-2 tag-secondary">
+                            <span>一抽價</span>
+                            <span>NT${{item.OneDrawMoney}}</span>
+                        </div>
+                        <div class="mr-2 tag-secondary">
+                            <span>運費</span>
+                            <span>NT${{item.Fare}}</span>
+                        </div>
+                        <div class="mr-2 tag-secondary">
+                            <span>存放天數限制</span>
+                            <span>{{item.AllowStoreDay}} 天</span>
+                        </div>
+                        <div class="mr-2 tag-secondary">
+                            <span>當前提升機率</span>
+                            <span>{{item.NowProbability/10}} %</span>
+                        </div>
+                        <div class="mr-2 tag-secondary">
+                            <span>提升幅度</span>
+                            <span>{{item.AddProbability/10}} %</span>
+                        </div>
+                    </div>
+                </template>
+                <div class="mb-4">
+                    <table class="table bg-white">
+                        <thead class="bg-dark text-white">
+                            <tr>
+                                <th class="w-75">獎項</th>
+                                <th class="w-25 text-center">餘量/總量</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="item in RawardItemsDetail">
+                                <tr>
+                                    <td :class="{'text-cancel': item.LaveNum == 0}">{{item.RawardLevel}}  {{item.Name}}</td>
+                                    <td :class="{'text-cancel': item.LaveNum == 0,'text-center': true}">{{item.LaveNum}}/{{item.Num}}</td>
+                                </tr>
+                            </template>
+                        </tbody>
+                        <tfoot class="bg-secondary text-white">
+                            <tr>
+                                <td>合計</td>
+                                <td class="text-center">{{SumOfLaveNum}}/{{SumOfNum}}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>  
+                <div class="mb-5">
+                    <button class="btn btn-danger btn-lg" @@click="goToStartLottery">抽獎</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 mb-5">
+                <div class="d-flex justify-content-center align-items-center mb-3 title-line">
+                    <img src="@Url.Content("~/img/圓形選者.png")" width="45" />
+                    <h3 class="text-center fw-bolder title-style">商品簡介</h3>
+                </div>
+                <template v-for="item in RawardData">
+                    <div>
+                        <span>
+                            {{item.Introduction}}
+                        </span>
+                    </div>
+                </template>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-center align-items-center mb-3 title-line">
+                    <img src="@Url.Content("~/img/圓形選者.png")" width="45" />
+                    <h3 class="text-center fw-bolder title-style">購買須知</h3>
+                </div>
+                <div>
+                    <p>
+                        <i class="fa-solid fa-heart"></i>【消費方式】: 購買代幣>抽賞>申請出貨>等待收貨<br>
+                        <i class="fa-regular fa-heart"></i>【商品系列】: 抽取時請注意系列內容，有些系列為廠商自製賞<br>
+                        <i class="fa-solid fa-heart"></i>【商品存放】: 商品抽獎完成後，獎項會存放在個人的暫存倉庫，存放時間依該池提供的時間為準，若超過時間未領取，則商品會自動寄送，寄送地址以註冊內容為準<br>
+                        <i class="fa-regular fa-heart"></i>【抽賞提示】: 頁面跳轉時請勿重新整理，以及強制關閉頁面<br>
+                        <i class="fa-solid fa-heart"></i>【購物貨運】: 以每個獎池進行運費計算，抽取完的獎品將會儲存至暫存倉，如抽取間隔不超過該池的保存天數，則不另外計算運費<br>
+                        <i class="fa-regular fa-heart"></i>【包套購買】: 包套購買時請注意代幣是否充足，以免購買失敗<br>
+                        <i class="fa-solid fa-heart"></i>【雙重中獎】: 無二次中獎且不附籤紙<br>
+                        <i class="fa-regular fa-heart"></i>【商品版本】: 獎品版本依廠商提供為準，因此可能會有代理及日版差別<br>
+                        <i class="fa-solid fa-heart"></i>【商品質量】: 玩具為大量生產製造，全新商品不保證無原廠瑕疵，因運送過程有可能造成盒況損傷自行承擔風險<br>
+                        <i class="fa-regular fa-heart"></i>【出貨地址】: 商品出貨地址以個人填寫地址為準，請在抽取前確認地址正確性，若因地址填寫錯誤而導致商品遺失或二次運費的產生，本公司一概不負責<br>
+                        <i class="fa-solid fa-heart"></i>【盒況說明】: 商品在日方原廠出品、運送及海關檢驗時可能有盒損、原廠二次膠拆檢等狀況。若您對於盒況有相當高的要求，建議您不要購買<br>
+                        <i class="fa-regular fa-heart"></i>【全新未拆】: 全新未拆為商品本身未拆封過，不包含宣紙、運輸箱...等商品附加包材，若您對於運輸包材有特別要求，建議您不要購買<br>
+                        <i class="fa-solid fa-heart"></i>【到貨開箱】: 收到商品後請錄影開箱，若商品有明顯瑕疵，本公司會代為向商品提供方反應，但不保證商品提供方會處理<br>
+                        <i class="fa-regular fa-heart"></i>【金流事項】: 因應政府金融法規限制，短時間內頻繁刷卡可能視為風險帳戶而暫停刷卡功能，建議您一次購買足夠代幣
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.js" integrity="sha512-WNZwVebQjhSxEzwbettGuQgWxbpYdoLf7mH+25A7sfQbbxKeS5SQ9QBf97zOY4nOlwtksgDA/czSTmfj4DUEiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        let vueApp = {
+            data(){
+                return {
+                    RawardData:[],
+                    RawardItemsDetail:[],
+                    ImageList:[],
+                    SumOfLaveNum:0,
+                    SumOfNum:0,
+                }
+            },
+            methods:{               
+                getData() {
+                    let _this = this;
+                    let id = window.location.pathname.split('/').pop();
+                    this.clrarData();
+
+                    axios.get(`/PrizePoolDetail/getShowRawards/${id}`)
+                        .then((res)=>{
+                            //console.log(res.data);
+                            _this.RawardData = res.data;
+                            _this.ImageList.push(res.data[0].Image)
+                            axios.get(`/PrizePoolDetail/getShowRawardsItems/${id}`)
+                                .then((res)=>{
+                                    //console.log(res.data)
+                                    _this.RawardItemsDetail = res.data;
+                                    for (let item of res.data) {
+                                        _this.ImageList.push(item.Image)
+                                        _this.SumOfLaveNum += item.LaveNum;
+                                        _this.SumOfNum += item.Num;
+                                    }
+                                    //console.log(_this.ImageList)
+
+                                })
+                                .then(() => {
+                                    _this.causelStart();
+                                })
+                        })
+                },
+                clrarData(){
+                    this.RawardData = [];
+                    this.RawardItemsDetail = [];
+                    this.ImageList = [];
+                    this.SumOfLaveNum = 0;
+                    this.SumOfNum = 0;
+                },
+                //圖片絕對路徑
+                createImage(img){
+                    return `https://finalprojectbackend.azurewebsites.net/img/webDataPicture\/${img}`
+                },
+                causelStart(){
+                    // 載入後啟動輪播
+                    $('.my-slick-main').slick({
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        arrows: false,
+                        fade: true,
+                        infinite: true,
+                        speed: 300,
+                        asNavFor: '.my-slick-partial',
+                        autoplay: true,
+                        autoplaySpeed: 2000,
+                    });
+                    $('.my-slick-partial').slick({
+                        slidesToShow: 4,
+                        slidesToScroll: 1,
+                        asNavFor: '.my-slick-main',
+                        //dots: true,
+                        //centerMode: true,
+                        focusOnSelect: true
+                    });
+                },
+                goToStartLottery(){
+                    let _this = this;
+                    let id = window.location.pathname.split('/').pop();
+
+                    axios.get(`/StartLottery/Index/${id}`)
+                        .then((res) => {
+                            window.location.href = res.request.responseURL;
+                        });
+                },
+            },
+            mounted(){
+                this.getData();               
+            },
+        }
+            
+
+        let app = Vue.createApp(vueApp).mount("#app");
+    </script>
+}

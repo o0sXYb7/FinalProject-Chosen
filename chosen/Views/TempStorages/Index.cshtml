@@ -1,0 +1,710 @@
+﻿@section Styles
+{
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/fixedheader/3.3.2/css/fixedHeader.dataTables.min.css">
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="">
+    <style>
+        .breadcrumb__links a{
+            color: #8a8888;
+        }
+
+        .dataTables_scroll {
+            background-color:white;
+        }
+
+        .dtfh-floatingparent{
+            margin-top: -10px;
+        }
+
+        #partialViewContainer{
+            margin-bottom: 30px;
+        }
+
+        .dataTables_length, .table_commodity_filter{
+            margin-bottom:10px;
+        }
+
+        .tempStorages-btns {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            background-color:white;
+        }
+
+        .tempStorages-btn {
+            background-color: transparent;
+            font-size:20px;
+            color: black;
+            border: none;   
+            padding: 10px 20px;
+            margin: 0 5px;
+            transition: color 0.3s, border-bottom 0.3s;
+            cursor: pointer;
+            /* outline: none; 去除按钮的焦点边框 */
+            box-sizing: border-box; /* 确保包括边框在内的尺寸稳定 */
+            border: 2px solid transparent; /* 添加透明边框 */
+        }
+
+            .tempStorages-btn.active {
+                color: #e53637;
+                       border-bottom: 2px solid #e53637
+            }
+
+            .tempStorages-btn:hover {
+                color: #e53637
+            }
+
+        #table_tempstorage thead th {
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        #table_tempstorage tbody td {
+            text-align: center;
+            padding-right:20px;
+            vertical-align: middle;
+        }
+
+        #table_commodity thead th {
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        #table_commodity tbody td {
+            text-align: center;
+            padding-right: 20px;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        #PrizePicture{
+            width:80px;
+        }
+
+/*        .functionHeader,
+        .functionCell {
+            display: none;
+        }*/
+
+        .functionCell button {
+            white-space: nowrap;
+            width: 90px;
+            margin: 5px 0px;
+        }
+
+        #partialViewContainer .container{
+            /*background-color:white;*/
+            /*margin-bottom:30px;*/
+        }
+
+        .sorting {
+            text-align: center !important;
+        }
+
+        .dataTables_info{
+            margin-top: 10px !important;
+        }
+
+        .pagination{
+            margin-top: 20px !important;
+        }
+
+        .commodityBtn{
+            white-space: nowrap;
+        }
+
+        .temp-nowrap
+        {
+            white-space: nowrap;
+            /*overflow: hidden;
+            text-overflow: ellipsis;*/
+        }
+
+        .commodity-check{
+            vertical-align: middle;
+            margin-left:10px;
+            width:20px;
+            height:20px;
+        }
+
+        @@media screen and (max-width: 450px) {
+            .tempStorages-btn {
+                font-size: 15px;
+            }
+
+            #table_tempstorage tbody td {
+                white-space: nowrap;
+            }
+
+            #table_commodity tbody td {
+                white-space: nowrap;
+            }
+        }
+    </style>
+}
+
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a asp-area="" asp-controller="Home" asp-action="index"><i class="fa fa-home"></i> 首頁</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Classification">分類</a>
+                    <span>一番賞倉庫</span>
+                </div>
+
+                <div class="tempStorages-btns">
+                    <button class="tempStorages-btn active" id="tempStoragesBtn_unReceive">一番賞倉庫</button>
+                    <button class="tempStorages-btn" id="commoditiesBtn">商品</button>
+                    <button class="tempStorages-btn" id="tempStoragesBtn_Receive">已領取</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="partialViewContainer">
+    @if (TempData["PartialViewName"] != null)
+    {
+        <script src="~/js/jquery-3.3.1.min.js"></script>
+
+        <script>
+            tabs_commodity();
+        </script>
+    }
+    else
+    {
+        @*@Html.Partial("_TempStoragesIndexPartial")*@
+        <script>
+            tabs_TempStorages_unR();
+        </script>
+    }
+</div>
+
+@section Scripts
+{
+    <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.13.4/i18n/zh-HANT.json"></script>
+    <script src="//cdn.datatables.net/fixedheader/3.3.2/js/dataTables.fixedHeader.min.js"></script>
+    <script src=""></script>
+    <script>
+
+        $(document).ready(function () {
+            $('.tempStorages-btn').click(function () {
+                $('.tempStorages-btn').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            $(".tempStorages-btn").click(function () {
+                // 獲取按鈕的 ID
+                var btnId = $(this).attr("id");
+
+                // 檢查按鈕的 ID
+                if (btnId === "tempStoragesBtn_unReceive") {
+                    // 如果是一番賞倉庫按鈕，修改<span>一番賞倉庫</span>的內容
+                    $(".breadcrumb__links span").text("一番賞倉庫");
+                } else if (btnId === "commoditiesBtn") {
+                    // 如果是商品按鈕，修改<span>一番賞倉庫</span>的內容
+                    $(".breadcrumb__links span").text("商品");
+                } else if (btnId === "tempStoragesBtn_Receive") {
+                    // 如果是已領取按鈕，修改<span>一番賞倉庫</span>的內容
+                    $(".breadcrumb__links span").text("已領取");
+                }
+            });
+
+            tabs_TempStorages_unR();
+        });
+
+        $('#table_tempstorage').DataTable({
+            //"fixedHeader": true,
+            "autoWidth": false,
+            "scrollX": true,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/zh-HANT.json',
+            },
+            columnDefs: [
+                { width: '70px', targets: [3] },
+                { width: '90px', targets: [7] },
+                { width: '80px', targets: [8] }, 
+            ]
+        });
+
+        //btnView();
+
+
+        // 按鈕-商品-顯示同 TempStorageId ， Receive 為 False的結果
+        $("#commoditiesBtn").click(function () {
+            // 發送 AJAX 請求
+            $.ajax({
+                url: '@Url.Action("IndexPartial", "Commodities")',
+                type: "GET",
+                success: function (result) {
+                    var partial = result;
+                    // 將 partial view 加入到 #partialViewContainer 中
+                    $("#partialViewContainer").html(result);
+
+                    $('#table_commodity').DataTable({
+                        //"fixedHeader": true,
+                        "autoWidth": false,
+                        "scrollX": true,
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/zh-HANT.json',
+                        },
+                        columnDefs: [
+                            { width: '160px', targets: [1] },
+                            { width: '100px', targets: [2] },
+                            { width: '150px', targets: [7] },   
+                        ]   
+                    });
+
+                    //MODAL--------------------------------------
+                    $(document).on("click", "#editModal", function () {
+                        //e.preventDefault();
+                        var id = $(this).data("id");
+                        $.ajax({
+                            type: "GET",
+                            url: "/Commodities/Edit",
+                            data: { id: id },
+                            success: function (result) {
+                                $("#modalContext").html(result); //將Partial填充進modal
+                                $("#editCommodity").modal("show"); //顯示modal
+                                //為按鈕添加事件
+                                $(document).on('click', "#editPost", function () {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: `/Commodities/Edit/${id}`,
+                                        data: $('#editForm').serialize(),
+                                        success: function (response) {
+                                            if (/<html/i.test(response)) {
+                                                $("#editCommodity").modal("hide"); //隱藏modal
+                                                $("#partialViewContainer").empty();
+                                                tabs_commodity();
+                                                //提示修改成功
+                                                const Toast = Swal.mixin({
+                                                    toast: true,
+                                                    position: 'top-end',
+                                                    showConfirmButton: false,
+                                                    timer: 3000,
+                                                    timerProgressBar: true,
+                                                    didOpen: (toast) => {
+                                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                                    }
+                                                })
+
+                                                Toast.fire({
+                                                    icon: 'success',
+                                                    title: '商品修改成功'
+                                                })
+                                            } else {
+                                                //$("#editCommodity").modal("hide"); //隱藏modal
+                                                //tabs_commodity();
+                                                $("#modalContext").html(response); //將帶有錯誤訊息的Partial填充回modal
+                                                //提示修改失敗
+                                                const Toast = Swal.mixin({
+                                                    toast: true,
+                                                    position: 'top-end',
+                                                    showConfirmButton: false,
+                                                    timer: 3000,
+                                                    timerProgressBar: true,
+                                                    didOpen: (toast) => {
+                                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                                    }
+                                                })
+
+                                                Toast.fire({
+                                                    icon: 'error',
+                                                    title: '商品修改失敗'
+                                                })
+                                            }
+                                        },
+                                        error: function (xhr) {
+                                            console.log(xhr.statusText + ': ' + xhr.responseText);
+                                        }
+                                    });
+                                });
+
+                            },
+                            error: function (xhr, status, error) {
+                                alert(xhr.responseText);
+                            }
+                        });
+                    });
+                    //MODAL--------------------------------------
+                },
+                error: function (xhr, status, error) {
+                    alert("Error: " + error);
+                }
+            });
+        });
+
+        // 按鈕-倉庫-顯示Receive 為 False的結果
+        $("#tempStoragesBtn_unReceive").click(function () {
+            // 發送 AJAX 請求
+            $.ajax({
+                url: '@Url.Action("IndexPartial_unReceive", "TempStorages")',
+                type: "GET",
+                success: function (result) {
+                    // 將 partial view 加入到 #partialViewContainer 中
+                    $("#partialViewContainer").empty().html(result);
+
+                    $('#table_tempstorage').DataTable({
+                        //"fixedHeader": true,
+                        "autoWidth": false,
+                        "scrollX": true,
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/zh-HANT.json',
+                        },
+                        columnDefs: [
+                            { width: '70px', targets: [3] },
+                            { width: '90px', targets: [7] },
+                            { width: '80px', targets: [8] },
+                        ]
+                    });
+
+                    //btnView();
+                    //MODAL--------------------------------------
+                    //$(document).on("click", "#createModal", function () {
+                    //    //e.preventDefault();
+                    //    var id = $(this).data("id");
+                    //    $.ajax({
+                    //        type: "GET",
+                    //        url: "/TempStorages/CreateCommodity",
+                    //        data: { id: id },
+                    //        success: function (result) {
+                    //            $("#modalContext").html(result); //將Partial填充進modal
+                    //            $("#createCommodity").modal("show"); //顯示modal
+
+                    //            $(document).on('click', "#createPost", function () {
+                    //                $.ajax({
+                    //                    type: "POST",
+                    //                    url: "/Commodities/SaveCommodity",
+                    //                    data: $('#CreateCommodityForm').serialize(),
+                    //                    //async: false, //設置為同步，才能立即收到回應
+                    //                    success: function (response) {
+                    //                        if (/<html/i.test(response)) {
+                    //                            //alert(response.message);
+                    //                        }else {
+                    //                            //alert(response.message);
+                    //                            $("#modalContext").html(response); //將帶有錯誤訊息的Partial填充回modal
+                    //                        }
+
+                    //                    },
+                    //                    error: function (response)
+                    //                    {
+                    //                        // 錯誤的情况
+                    //                        if(response != null)
+                    //                        {
+
+                    //                        }
+                    //                    }
+                    //                });
+                    //            });
+
+
+                    //        },
+                    //        error: function (xhr, status, error) {
+                    //            alert(xhr.responseText);
+                    //        }
+                    //    });
+                    //});
+                    //MODAL--------------------------------------
+
+                },
+                error: function (xhr, status, error) {
+                    alert("Error: " + error);
+                }
+            });
+        });
+
+        // 按鈕-倉庫-顯示Receive 為 True的結果
+        $("#tempStoragesBtn_Receive").click(function () {
+            // 發送 AJAX 請求
+            $.ajax({
+                url: '@Url.Action("IndexPartial_Receive", "TempStorages")',
+                type: "GET",
+                success: function (result) {
+                    // 將 partial view 加入到 #partialViewContainer 中
+                    $("#partialViewContainer").html(result);
+
+                    $('#table_tempstorage').DataTable({
+                        //"fixedHeader": true,
+                        "autoWidth": false,
+                        "scrollX": true,
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/zh-HANT.json',
+                        },
+                        columnDefs: [
+                            { width: '70px', targets: [3] },
+                            { visible: false, targets: [7] },
+                            { visible: false, targets: [8] },
+                        ]
+                    });
+
+                    //btnView();
+                },
+                error: function (xhr, status, error) {
+                    alert("Error: " + error);
+                }
+            });
+        });
+
+        //OK
+        function markAsReceived(tempStorageId) {
+            Swal.fire({
+                title: '您確定要領取此一番賞?',
+                text: '領取後無法再對其再進行任何操作，請慎重考慮',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d15b47',
+                cancelButtonColor: '#abbac3',
+                confirmButtonText: '確認',
+                cancelButtonText: '取消',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("MarkReceived", "TempStorages")',
+                        type: 'POST',
+                        data: { id: tempStorageId },
+                        success: function (result) {
+                            if (result.success) {
+                                //var row = $('#tempStorageRow_' + tempStorageId);
+                                //row.find('.receive').text('True');
+                                //row.find('.markReceivedButton').remove();
+                                //alert(result.message);
+                                //location.reload();
+                                tabs_TempStorages_unR();
+                                Swal.fire({
+                                    title: `領取成功`,
+                                    text: `一番賞將於隔天開始寄送`,
+                                    icon: 'success',
+                                    //confirmButtonColor: '#d15b47',
+                                    confirmButtonText: '確認'
+                                })
+                            } else {
+                                Swal.fire({
+                                    title: `領取失敗`,
+                                    text: `一番賞尚有部分販售中`,
+                                    icon: 'error',
+                                    confirmButtonColor: '#d15b47',
+                                    confirmButtonText: '確認'
+                                })
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: `領取時發生錯誤`,
+                                text: `請洽客服中心，我們將盡快為您處理。`,
+                                icon: 'error',
+                                confirmButtonColor: '#d15b47',
+                                confirmButtonText: '確認'
+                            })
+                        }
+                    });
+                }
+            })
+        }
+
+        //OK
+        function removeShelves(id) {
+            Swal.fire({
+                title: '您確定要下架此商品?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d15b47',
+                cancelButtonColor: '#abbac3',
+                confirmButtonText: '確認',
+                cancelButtonText: '取消',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("RemoveShelves", "Commodities")',
+                        type: "POST",
+                        data: { id: id },
+                        success: function (result) {
+                            tabs_commodity();
+                            Swal.fire({
+                                title: `商品下架成功`,
+                                text: `現可至倉庫領取此一番賞`,
+                                icon: 'success',
+                                //confirmButtonColor: '#d15b47',
+                                confirmButtonText: '確認'
+                            })
+                        },
+                        error: function (xhr, status, error) {
+                            //alert("商品下架時發生錯誤");
+                            Swal.fire({
+                                title: `商品下架時發生錯誤`,
+                                text: `請洽客服中心，我們將盡快為您處理。`,
+                                icon: 'error',
+                                confirmButtonColor: '#d15b47',
+                                confirmButtonText: '確認'
+                            })
+                        }
+                    });
+                }
+            })
+        };
+
+        //商品頁籤載入
+        function tabs_commodity() {
+            $.ajax({
+                url: '@Url.Action("IndexPartial", "Commodities")',
+                type: "GET",
+                success: function (result) {
+                    // 將 partial view 加入到 #partialViewContainer 中
+                    $("#partialViewContainer").empty().html(result);
+
+                    $('#table_commodity').DataTable({
+                        //"fixedHeader": true,
+                        "autoWidth": false,
+                        "scrollX": true,
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/zh-HANT.json',
+                        },
+                        columnDefs: [
+                            { width: '160px', targets: [1] },
+                            { width: '100px', targets: [2] },
+                            { width: '150px', targets: [7] },
+                        ]
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert("Error: " + error);
+                }
+            });
+        };
+
+
+        //倉庫(未領取)頁籤載入
+        function tabs_TempStorages_unR() {
+            $.ajax({
+                url: '@Url.Action("IndexPartial_unReceive", "TempStorages")',
+                type: "GET",
+                success: function (result) {
+                    // 將 partial view 加入到 #partialViewContainer 中
+                    $("#partialViewContainer").empty().html(result);
+
+                    $('#table_tempstorage').DataTable({
+                        //"fixedHeader": true,
+                        "autoWidth": false,
+                        "scrollX": true,
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/zh-HANT.json',
+                        },
+                        columnDefs: [
+                            { width: '70px', targets: [3] },
+                            { width: '90px', targets: [7] },
+                            { width: '80px', targets: [8] },
+                        ]
+                    });
+
+                    //btnView();
+                },
+                error: function (xhr, status, error) {
+                    alert("Error: " + error);
+                }
+            });
+        };
+
+
+        //倉庫(未領取)新增商品按鈕事件 預載入及通過按鈕載入的"倉庫(未領取)頁面"都要使用所以放在外面
+        $(document).on("click", "#createModal", function () {
+            //e.preventDefault();
+            var id = $(this).data("id");
+            $.ajax({
+                type: "GET",
+                url: "/TempStorages/CreateCommodity",
+                data: { id: id },
+                success: function (result) {
+                    $("#modalContext").html(result); //將Partial填充進modal
+                    $("#createCommodity").modal("show"); //顯示modal
+                    //撰寫中
+                    $(document).on('click', "#createPost", function () {
+                        $.ajax({
+                            type: "POST",
+                            url: "/Commodities/SaveCommodity",
+                            data: $('#CreateCommodityForm').serialize(),
+                            //async: false, //設置為同步，才能立即收到回應
+                            success: function (response) {
+                                if (response.success) {
+                                    $("#createCommodity").modal("hide"); //隱藏modal
+                                    //alert(response.message);
+                                    //提示新增成功
+                                    $("#partialViewContainer").empty();
+                                    tabs_TempStorages_unR();
+                                    const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                    })
+
+                                    Toast.fire({
+                                        icon: 'success',
+                                        title: '新增商品成功'
+                                    })
+
+                                    //$("#partialViewContainer").empty();
+                                    //tabs_TempStorages_unR();
+                                } else {
+                                    //alert(response.message);
+                                    $("#modalContext").html(response); //將帶有錯誤訊息的Partial填充回modal
+                                    //提示修改失敗
+                                    const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                    })
+
+                                    Toast.fire({
+                                        icon: 'error',
+                                        title: '新增商品失敗'
+                                    })
+                                }
+
+                            },
+                            error: function (response) {
+                                // 錯誤的情况
+                                if (response != null) {
+
+                                }
+                            }
+                        });
+                    });
+
+
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseText);
+                }
+            });
+        });
+
+        //function btnView(){
+        //    var functionCell = $('.functionCell');
+        //    var functionHeader = $('.functionHeader');
+
+        //    if (functionCell.text().trim() !== '') {
+        //    functionCell.css('display', 'table-cell');
+        //    functionHeader.css('display', 'table-cell');
+        //    }
+        //}
+    </script>
+}
+

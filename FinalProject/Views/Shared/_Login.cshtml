@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>天選後台登入</title>
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet" />
+    <!-- Icons. Uncomment required icon fonts -->
+    <link href="~/fonts/boxicons.css" rel="stylesheet" />
+
+    <!-- Core CSS -->
+    <link href="~/css/layoutcss/core.css" rel="stylesheet" />
+    <link href="~/css/layoutcss/theme-default.css" rel="stylesheet" />
+    <link href="~/css/layoutcss/demo.css" rel="stylesheet" />
+
+    <link href="~/css/layoutcss/pages/page-auth.css" rel="stylesheet" />
+</head>
+<body>
+
+
+    @RenderBody()
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/layoutjs/popper.js"></script>
+    <script src="~/js/layoutjs/perfect-scrollbar.js"></script>
+    <script src="~/js/layoutjs/menu.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.47/vue.global.min.js" integrity="sha512-DJ2+sosWB5FnZAIeCWAHu2gxQ7Gi438oOZLcBQSOrW8gD0s7LIXDv/5RW76B3FcljF40BXnfqNIo6Dhp7dFHJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.js" integrity="sha512-RjvSEaeDqPCfUVQ9kna2/2OqHz/7F04IOl1/66LmQjB/lOeAzwq7LrbTzDbz5cJzlPNJ5qteNtHR56XaJSTNWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    @await RenderSectionAsync("Scripts", required: false) 
+
+</body>
+</html>

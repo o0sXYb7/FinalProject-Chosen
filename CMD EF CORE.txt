@@ -1,0 +1,14 @@
+Scaffold-DbContext "Data Source=(localdb)\ProjectModels;Initial Catalog=Northwind;Integrated Security=True"Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -t Customers -f
+
+Scaffold-DbContext "Data Source=.;Initial Catalog=FinalProject;Integrated Security=True"Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -t BreakingNews,Carousel,Commodity,Customerservice,Image_Store,MemberInfo,Payment,QuestionHistory,QuestionReport,Raward_items,Raward_lib,ShowRaward,ShowRaward_items,TempStorage,wishlist,TradeHistory,Factory -f
+
+            if (!optionsBuilder.IsConfigured)
+            {
+                IConfiguration configuration = new ConfigurationBuilder()
+                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+                optionsBuilder.UseSqlServer(configuration.GetConnectionString("FinalProject"));
+            }
+
+

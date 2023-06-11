@@ -1,0 +1,439 @@
+﻿@section Styles{
+    <link rel="stylesheet" href="~/splide-4.1.3/dist/css/splide.min.css" type="text/css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+    .splide__arrow{
+        background:unset;
+        background-color:transparent;
+        color:white;
+        /*font-size: 30px;*/
+    }
+
+        .splide__arrow i{
+            font-size:30px;
+        }
+
+        .item-container {
+            display: flex;
+            align-items: center;
+            margin-bottom:20px;
+            border-radius:6px;
+            color:#fff;
+            font-weight: 900;
+        }
+
+        .item {
+            padding: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .item:nth-child(1) {
+
+            flex: 1 0 15%; /* 第一个 item 占据 10% 的宽度 */
+            text-align:center;
+            font-size:25px;
+        }
+
+        .item:nth-child(2) {
+            flex: 1 0 30%; /* 第二个 item 占据 35% 的宽度 */
+            padding-left:0px;
+            padding-top:10px;
+            padding-bottom:10px;
+            display: flex; /* 添加这一行 */
+            justify-content: center; /* 添加这一行 */
+        }
+
+            .item:nth-child(2) img {
+                border-radius:6px;
+                /*max-height:85%;
+                max-width: 85%;*/
+                align-self: center; /* 添加这一行 */
+            }
+
+        .item:nth-child(3) {
+            flex: 1 0 50%; 
+            text-align:center;
+            padding-left: 5px;
+            padding-right: 10px;
+            font-size: 16px !important;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            white-space: normal;
+            text-overflow: ellipsis;
+            width: 100%; /* 添加固定的宽度 */
+        }
+
+                .item:nth-child(3) h5{
+                    font-size: 16px !important;
+                }
+
+        .section-title{
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i{
+            padding-top:2px;
+            margin-left:10px;
+            cursor: pointer;
+            font-size:35px;
+            color:#969696 ;
+        }
+
+        .useFirstForm {
+            color: #E53637 !important;
+        }
+
+        .product__item, .rankLink {
+            cursor: pointer;
+        }
+
+        .product__item__text h5{
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            white-space: normal;
+            text-overflow: ellipsis;
+            width: 100%; /* 添加固定的宽度 */
+        }
+
+
+    </style>
+}
+
+<div class="container">
+     
+</div>
+
+  <!-- Hero Section Begin -->
+<section class="hero">
+    <div class="container">
+        <section id="image-carousel" class="splide" aria-label="Beautiful Images">
+            <div class="splide__arrows">
+                <button class="splide__arrow splide__arrow--prev">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button class="splide__arrow splide__arrow--next">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="splide__track">
+                <ul class="splide__list">
+                    <li class="splide__slide" data-splide-interval="3000">
+                        <img src="@Url.Content("~/img/hero/hero-1.jpg")" alt="">
+                    </li>
+                    <li class="splide__slide" data-splide-interval="3000">
+                        <img src="@Url.Content("~/img/hero/hero-2.png")" alt="">
+                    </li>
+                    <li class="splide__slide" data-splide-interval="3000">
+                        <img src="@Url.Content("~/img/hero/hero-3.jpg")" alt="">
+                    </li>
+                    
+
+                </ul>
+            </div>
+        </section>
+       @* <section id="image-carousel" class="splide" aria-label="Beautiful Images">
+            <div class="splide__track">
+                <ul class="splide__list">
+                    <li class="splide__slide">
+                        <img src="@Url.Content("~/img/hero/hero-1.jpg")" alt="">
+                    </li>
+                    <li class="splide__slide">
+                        <img src="image02.jpg" alt="">
+                    </li>
+                    <li class="splide__slide">
+                        <img src="image03.jpg" alt="">
+                    </li>
+                </ul>
+            </div>
+        </section>*@
+        @*<div class="hero__slider owl-carousel">
+            <div class="hero__items set-bg" data-setbg="@Url.Content("~/img/hero/hero-1.jpg")">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="hero__text">
+                            <div class="label">Adventure</div>
+                            <h2>Fate / Stay Night: Unlimited Blade Works</h2>
+                            <p>After 30 days of travel across the world...</p>
+                            <a href="#"><span>Watch Now</span> <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero__items" data-setbg="img/hero/hero-1.jpg">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="hero__text">
+                            <div class="label">Adventure</div>
+                            <h2>Fate / Stay Night: Unlimited Blade Works</h2>
+                            <p>After 30 days of travel across the world...</p>
+                            <a href="#"><span>Watch Now</span> <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero__items set-bg" data-setbg="img/hero/hero-1.jpg">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="hero__text">
+                            <div class="label">Adventure</div>
+                            <h2>Fate / Stay Night: Unlimited Blade Works</h2>
+                            <p>After 30 days of travel across the world...</p>
+                            <a href="#"><span>Watch Now</span> <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+    </div>
+</section>
+<!-- Hero Section End -->
+<!-- Product Section Begin -->
+<section class="product spad" id="app">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="trending__product">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-8 col-sm-8">
+                            <div class="section-title">
+                                <h4>新品推薦</h4>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="btn__all">
+                                <a href="/Commodities/Ichiban" class="primary-btn">更多 <span class="arrow_right"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-6" v-for="item in latestShowRawardItems">
+                            <div class="product__item" @@click="poolLink(item.ShowRaward.ShowRawardId)">
+                                <div class="product__item__pic prize-img" :style="{backgroundImage: GetImage(item.ShowRaward.Image)}">
+                                    <div class="ep">{{ item.RemainingItems }} / {{ item.TotalItems }}</div>
+                                    @*<div class="comment"><i class="fa fa-comments"></i> 11</div>
+                                    <div class="view"><i class="fa fa-eye"></i> 9141</div>*@
+                                </div>
+                                <div class="product__item__text prize-label">
+                                    <ul>
+                                        <li>{{ item.FactoryName }}</li>
+                                        <li>{{ item.ShowRaward.Series }}</li>
+                                    </ul>
+                                    <h5><a href="#">{{ item.ShowRaward.Name }}</a></h5>
+                                    <div class="prize">
+                                        <h5 class="prize-price">NT${{ item.ShowRaward.OneDrawMoney }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="popular__product">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-8 col-sm-8">
+                            <div class="section-title">
+                                <h4>選者自製</h4>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="btn__all">
+                                <a href="/Commodities/Ichiban" class="primary-btn">更多 <span class="arrow_right"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-6" v-for="item in latestShowRawardItemsByFactory">
+                            <div class="product__item" @@click="poolLink(item.ShowRaward.ShowRawardId)">
+                                <div class="product__item__pic prize-img" :style="{backgroundImage: GetImage(item.ShowRaward.Image)}">
+                                    <div class="ep">{{ item.RemainingItems }} / {{ item.TotalItems }}</div>
+                                    @*<div class="comment"><i class="fa fa-comments"></i> 11</div>
+                                    <div class="view"><i class="fa fa-eye"></i> 9141</div>*@
+                                </div>
+                                <div class="product__item__text prize-label">
+                                    <ul>
+                                        <li>{{ item.FactoryName }}</li>
+                                        <li>{{ item.ShowRaward.Series }}</li>
+                                    </ul>
+                                    <h5><a href="#">{{ item.ShowRaward.Name }}</a></h5>
+                                    <div class="prize">
+                                        <h5 class="prize-price">NT${{ item.ShowRaward.OneDrawMoney }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-12">
+                <div class="product__sidebar">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-6 col-sm-12">
+                            <div class="product__sidebar__view">
+                                <div class="section-title">
+                                    <h5>暢銷排行</h5>
+                                    <i class="bx bx-grid-small" :class="{ 'useFirstForm': useFirstForm }" @@click="toggleForm"></i>
+                                    
+                                </div>
+                                <ul class="filter__controls ranking_option">
+                                    <li class="active" @@click="changeSortOrder('TotalDrawCount1Day')">日</li>
+                                    <li @@click="changeSortOrder('TotalDrawCount1Week')">周</li>
+                                    <li @@click="changeSortOrder('TotalDrawCount1Month')">月</li>
+                                    @*<li data-filter=".years">Years</li>*@
+                                </ul>
+                                <div class="filter__gallery">
+                                    <template v-if="useFirstForm">
+                                        <div class="rankLink" v-for="(item, index) in sortedShowRawardItems">
+                                            <div class="ranking" @@click="poolLink(item.ShowRaward.ShowRawardId)">
+                                                <div class="product__sidebar__view__item prize-img" :style="{backgroundImage: GetImage(item.ShowRaward.Image)}">
+                                                    <div class="ep">{{ item.RemainingItems }} / {{ item.TotalItems }}</div>
+                                                    <div class="view">
+                                                        <ul>
+                                                            <li>{{ item.FactoryName }}</li>
+                                                        </ul>
+                                                    </div>
+
+                                                    <div class="ranking_text">
+                                                        <h5><a href="#">{{ item.ShowRaward.Name }}</a></h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template v-else>
+                                        <div class="item-container rankLink" v-for="(item, index) in sortedShowRawardItems" :style="{ backgroundColor: getItemBackgroundColor(index) }" @@click="poolLink(item.ShowRaward.ShowRawardId)">
+                                            <div class="item">
+                                                {{ index + 1 }}
+                                            </div>
+                                            <div class="item">
+                                                <img :src="'https://finalprojectbackend.azurewebsites.net/img/webDataPicture/' + item.ShowRaward.Image" />
+                                            </div>
+                                            <div class="item">
+                                                <h5>{{ item.ShowRaward.Name }}</h5>
+                                            </div>
+                                        </div>
+                                    </template>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Product Section End -->
+@section Scripts
+{
+    <script src="~/splide-4.1.3/dist/js/splide.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Splide('.splide', {
+                type: 'loop',
+                autoplay: 'Play',
+                speed: 800,
+                //perPage: 3,
+            }).mount();
+            //new Splide('#image-carousel').mount();
+
+        });
+
+        const app = Vue.createApp({
+            data() {
+                return {
+                    showRawardItems: [],
+                    latestShowRawardItems: [],
+                    sortedShowRawardItems: [], // 新增一个数组用于存储排序后的6个showRawardItems
+                    sortBy: 'TotalDrawCount1Day', // 默认以TotalDrawCount1Day排序
+                    useFirstForm: false,
+                };
+            },
+            methods: {
+                GetShowRawardItems() {
+                    let _this = this;
+                    axios.get('/home/GetPrizePool').then((response) => {
+                        _this.showRawardItems = response.data;
+                        _this.getLatestShowRawardItems();
+                        _this.sortShowRawardItems();
+                    });
+                },
+                GetImage(img) {
+                    var full = `url(https://finalprojectbackend.azurewebsites.net/img/webDataPicture\/${img})`;
+                    console.log(full)
+                    return full;
+                },
+                getLatestShowRawardItems() {
+                    const createTimes = this.showRawardItems.map(item => item.ShowRaward.CreateTime);
+                    createTimes.sort((a, b) => new Date(b) - new Date(a));
+
+                    const latestCreateTimes = createTimes.slice(0, 6);
+
+                    this.latestShowRawardItems = this.showRawardItems.filter(item =>
+                        latestCreateTimes.includes(item.ShowRaward.CreateTime)
+                    );
+                },
+                sortShowRawardItems() {
+                    const sortedItems = this.showRawardItems.slice().sort((a, b) =>
+                        b[this.sortBy] - a[this.sortBy]
+                    );
+                    this.sortedShowRawardItems = sortedItems.slice(0, 6);
+                },
+                changeSortOrder(sortBy) {
+                    this.sortBy = sortBy;
+                    this.sortShowRawardItems();
+                },
+                toggleForm() {
+                    this.useFirstForm = !this.useFirstForm;
+                },
+                poolLink(poolId) {
+                    // 導航到商品詳細頁面的程式碼，例如：
+                    window.location.href = '/PrizePoolDetail/Index/' + poolId;
+                },
+            },
+            computed: {
+                latestShowRawardItemsByFactory() {
+                    // 获取FactoryId为2的所有showRawardItems
+                    const showRawardItemsByFactory = this.showRawardItems.filter(item =>
+                        item.ShowRaward.FactoryId === 2
+                    );
+
+                    // 按照ShowRaward的CreateTime进行排序（按照最新的在前面）
+                    showRawardItemsByFactory.sort((a, b) =>
+                        new Date(b.ShowRaward.CreateTime) - new Date(a.ShowRaward.CreateTime)
+                    );
+
+                    // 取出最新的6个showRawardItems
+                    return showRawardItemsByFactory.slice(0, 6);
+                },
+                getItemBackgroundColor() {
+                    return function (index) {
+                        const colors = ['#ff0000', '#ff6a00', '#FEA000', 'green', '#009AFF', 'indigo', 'purple'];
+                        return colors[index % colors.length];
+                    };
+                },
+            },
+            watch: {
+                
+            },
+            mounted() {
+                this.GetShowRawardItems();
+            }
+
+        });
+
+        app.mount('#app');
+    </script>
+}

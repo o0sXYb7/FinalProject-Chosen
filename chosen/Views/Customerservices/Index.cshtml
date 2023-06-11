@@ -1,0 +1,280 @@
+﻿@model IEnumerable<chosen.Models.Customerservice>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles{
+    <style>        
+      /*  左邊的按鈕*/
+        .btn-dark-blue {
+            font-size: 35px;
+            background: #7474BF; /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #348AC7, #7474BF); /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #348AC7, #7474BF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            color: #fff;
+            border: 3px solid #eee;
+            border-radius: 35px;
+            
+            margin-top:30px;
+        }
+        
+
+   
+      /*  右邊Css*/
+        .larger-text {
+            font-size: 20px;
+        }
+
+        input {
+            position: absolute;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        .row {
+            display: flex;
+        }      
+
+        /* 部分檢視頁面 */
+        .tabs {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.5);
+           
+        }
+
+        .tab {
+            width: 100%;
+            color: black;
+            overflow: hidden;
+        }
+
+        .tab-label {
+            display: flex;
+            justify-content: space-between;
+            padding: 1em;
+            background: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin:3px;
+            
+        }
+            /* 點擊按鈕時會變顏色*/
+            .tab-label:hover {
+                background: #666;
+            }
+
+            .tab-label::after {
+                content: "\276F";
+                width: 1em;
+                height: 1em;
+                text-align: center;
+                transition: all .35s;
+                
+            }
+
+        .tab-content {
+            max-height: 0;
+            padding: 0 1em;
+            color: #2c3e50;
+            background: white;
+            transition: all .35s;
+           /* margin: 15px solid black;*/
+            overflow: hidden;
+            height: auto;
+            border: 15px solid rgb(64, 224, 208);
+            
+        }
+
+        .tab-close {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1em;
+            font-size: 0.75em;
+            background: #2c3e50;
+            cursor: pointer;
+        }
+
+            .tab-close:hover {
+                background: #1a252f;
+            }
+
+        input:checked + .tab-label {
+            background: #666;        
+        }
+
+        /*這個 ::after 選擇器將會對 .tab-label 元素的內容後方添加一個箭頭圖案，並將它旋轉90度，用來指示被選擇的標籤。*/
+            input:checked + .tab-label::after {
+                transform: rotate(90deg);
+            }
+
+        input:checked ~ .tab-content {
+            max-height: 100vh;
+            padding: 1em;
+        }
+
+       /* 固定容器的長與寬*/
+        .fixed-section {
+            width: 100%; /* 固定寬度 */
+            height: 800px; /* 固定高度 */
+        }
+
+        .fixed-container {
+            width: 100%; /* 固定寬度 */
+            height: 100%; /* 繼承父元素的高度 */
+        }
+
+        .fixed-row {
+            width: 100%; /* 固定寬度 */
+            height: 100%; /* 繼承父元素的高度 */
+        }
+
+        .fixed-col {
+            width: 25%; /* 固定寬度 */
+            height: 100%; /* 繼承父元素的高度 */
+        }
+
+        .fixed-col-content {
+            width: 100%; /* 固定寬度 */
+            height: 100%; /* 繼承父元素的高度 */
+        }
+
+        
+    </style>
+}
+
+<section class="py-5 fixed-section">
+    <div class="container px-4 px-lg-5 my-5 fixed-container">
+        <div class="row gx-4 gx-lg-5 align-items-center fixed-row">
+            <div class="col-md-4 fixed-col" border>
+                <ul class="nav flex-column fixed-col-content">
+                    <li class="nav-item">
+                        <button onclick="filterQuestions('Account')" class="btn btn-dark-blue btn-rounded">帳號問題</button>
+                    </li>
+                    <li class="nav-item">
+                        <button onclick="filterQuestions('Consumption')" class="btn btn-dark-blue btn-rounded">消費問題</button>
+                    </li>
+                    <li class="nav-item">
+                        <button onclick="filterQuestions('Freight')" class="btn btn-dark-blue btn-rounded">運費問題</button>
+                    </li>
+                    <li class="nav-item">
+                        <button onclick="filterQuestions('Commodity')" class="btn btn-dark-blue btn-rounded">商品問題</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="reportButton" onclick="showReportForm()" class="btn btn-dark-blue btn-rounded">問題回報</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-8 fixed-col-content">
+                <div class="large mb-1"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            filterQuestions('Account'); // 預設顯示帳號問題
+        });
+        function filterQuestions(className) {
+            $.ajax({
+                type: 'GET',
+                url: '/Customerservices/QuestionFilter',
+                data: { className: className },
+                success: function (data) {
+                    $('.large').addClass('loaded').html(data);
+                }
+            });
+           
+        }
+
+        function showReportForm() {
+            $('.large').empty(); // 清空 large元素的內容
+
+            var form = `
+                  <form class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="QuestionType">問題種類</label>
+                            <select id="QuestionType" class="form-control" name="QuestionType">
+                                <option value="帳號問題">帳號問題</option>
+                                <option value="消費問題">消費問題</option>
+                                <option value="運費問題">運費問題</option>
+                                <option value="商品問題">商品問題</option>
+                                <option value="其他問題">其他問題</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="QuestionTitle">問題標題</label>
+                            <textarea id="QuestionTitle" class="form-control" rows="1" name="QuestionTitle"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                                    <label for="Message">問題內文</label>
+                                                    <textarea id="Message" class="form-control" rows="5" name="questionhistoriesList[0].Message"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">送出</button>
+                </form>
+                `;
+
+            $('.large').append(form); // 在 middle 元素中加入新的表單內容
+            // 綁定表單的提交事件
+            $('form').submit(function (event) {
+                event.preventDefault(); // 阻止表單的默認提交行為
+
+                // 獲取使用者輸入的值
+                var questionType = $('#QuestionType').val();
+                var questionTitle = $('#QuestionTitle').val();
+                var message = $('#Message').val();
+                var memberId=1;
+                // 获取当前时间
+                var DateTime = new Date();
+
+                var formattedDate = JSON.stringify(DateTime)
+
+                console.log("message:"+message)
+                console.log("formattedDate:"+formattedDate)
+
+                
+
+                // 透過 AJAX 將使用者輸入的值發送到後端
+                $.ajax({
+                    type: 'POST',
+                    url: '/Customerservices/SubmitQuestion',
+                    data: {
+                       
+                        questionType: questionType,
+                        questionTitle: questionTitle,
+                        'questionhistoriesList[0].Message': message,
+                        questionDate: formattedDate // 将转换后的时间字符串传递到后端
+                    },
+                    
+                    success: function () {
+                        // 清空問題標題與問題內文
+                        $('#QuestionTitle').val('');
+                        $('#Message').val('');
+
+                        // 將問題種類回歸至預設值（帳號問題）
+                        $('#QuestionType').val('帳號問題');
+                        // 成功處理回應後的動作
+                        alert('問題已成功送出,請耐心等候回應');
+                    },
+                    error: function () {
+                        // 處理錯誤情況
+                        alert('發生錯誤無法將問題送出,請洽客服人員');
+                    }
+                });
+                
+            });
+        }
+    </script>
+}
+
+

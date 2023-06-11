@@ -1,0 +1,67 @@
+﻿@model chosen.Models.TempStoragesViewModel
+
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">商品修改</h5>
+    <div>
+        <p>倉庫信息：</p>
+        <p>一番賞名稱: @Model.PrizeName</p>
+        <p>一番賞數量: @Model.PrizeQuantity</p>
+        <p>截止日期: @Model.Commodity.Deadline</p>
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <form asp-controller="Commodities" asp-action="Edit" id="editForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Commodity.CommodityId" />
+        <div class="form-group">
+            <label asp-for="Commodity.TempStorageId" class="control-label"></label>
+            <input asp-for="Commodity.TempStorageId" readonly="readonly" class="form-control" />
+            <span asp-validation-for="Commodity.TempStorageId" class="text-danger"></span>
+        </div>
+        <div class="form-group" hidden="hidden">
+            <label asp-for="Commodity.MemberId" class="control-label"></label>
+            <input asp-for="Commodity.MemberId" readonly="readonly" class="form-control" />
+            <span asp-validation-for="MemberId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Commodity.CommodityName" class="control-label"></label>
+            <input asp-for="Commodity.CommodityName" class="form-control" />
+            <span asp-validation-for="Commodity.CommodityName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Commodity.CommodityQuantity" class="control-label"></label>
+            <input id="commodityQuantity" asp-for="Commodity.CommodityQuantity" class="form-control" />
+            <script>
+                $(function () {
+                    $('#commodityQuantity').on('input', function () {
+                        var value = $(this).val();
+                        if (value == 0) {
+                            $(this).val(1);
+                        }
+                    });
+                });
+            </script>
+            <span asp-validation-for="Commodity.CommodityQuantity" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Commodity.CommodityUnitPrice" class="control-label"></label>
+            <input asp-for="Commodity.CommodityUnitPrice" class="form-control" />
+            <span asp-validation-for="Commodity.CommodityUnitPrice" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Commodity.Deadline" class="control-label"></label>
+            <input asp-for="Commodity.Deadline" readonly="readonly" class="form-control" />
+            <span asp-validation-for="Commodity.Deadline" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Commodity.OnShelves" class="control-label"></label>
+            <input class="commodity-check" type="checkbox" name="Commodity.OnShelves" @(Model.Commodity.OnShelves == true ? "checked=\"checked\"" : "") value="true" />
+            <span asp-validation-for="Commodity.OnShelves" class="text-danger"></span>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+    <button id="editPost" type="button" class="btn btn-primary">修改</button>
+</div>

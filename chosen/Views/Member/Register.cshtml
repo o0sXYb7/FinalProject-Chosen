@@ -1,0 +1,350 @@
+﻿@section Styles
+{
+    @*<link href="~/css/memeber.css" rel="stylesheet">*@
+    <style>
+
+        .RenderBody {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            /* text-align: center; */
+            color: rgb(0, 0, 0);
+            box-sizing: border-box;
+            /* border: 1px solid #ccc; */
+            background: -webkit-linear-gradient(top, transparent 15px, #f0efef 0), -webkit-linear-gradient(left, transparent 15px, #f0efef 0);
+            background-size: 16px 16px;
+        }
+
+        .grid_line{
+            all:unset !important;
+        }
+
+        #app {
+            padding: 35px;
+            border-radius: 10px;
+            background-color: white;
+            border: 1px solid #d3d3d3 !important;
+            box-sizing: border-box;
+            box-shadow: 0px 0px 6px 0px rgba(41, 41, 41, 0.1);
+        }
+
+        .login__register h3{
+            margin-bottom: 5px !important;
+        }
+
+        .register__item {
+            padding: 5px 0px;
+        }
+
+        .loginregister {
+            padding-left: 10px;
+        }
+
+        .registeritem {
+            margin: 20px 0px;
+            flex-wrap: nowrap;
+            width: 300px;
+        }
+
+        .login__form{
+            padding-left: 0px;
+        }
+
+        .registration-btn {
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .error-message{
+            margin-bottom:10px;
+        }
+
+        .register__form input{
+            border-radius:5px;
+            border: 1px solid #d3d3d3 !important;
+        }
+
+    </style>
+}
+
+<div id="app">
+    <router-view></router-view>
+</div>
+
+@section Scripts
+{
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/vue-router@4"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const EmailComponent = {
+            template: 
+            `
+             
+                
+                    <div class="login__register">
+                        <h3>註冊</h3>
+                        <form>
+                            <div class="input__item">
+                                <div class="register__item">
+                                    <span class="icon_mail"></span>
+                                    <label>Email：</label>
+                                </div>
+                                <div class="register__item">
+                                    <input type="email" placeholder="請輸入您的電子信箱" v-model="form.Email" name="Email">
+                                </div>
+                                <div class="register__item">
+                                    <button type="button" class="site-btn register-btn" v-on:click="sendVerificationCode">寄送驗證碼</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+               
+            
+            `,
+            data() {
+                return {
+                    form: {
+                        Email: '',
+                    },
+                };
+            },
+            methods: 
+            {
+                async sendVerificationCode() 
+                {
+                    try {
+                        const formData = new FormData();
+                        formData.append('Email', this.form.Email);
+                        const response = await axios.post('/Member/SendVerificationCode', formData);
+
+                        // 檢查回應的結果
+                        if (response.data === -1) {
+                            // 郵箱已存在的錯誤碼，顯示提示訊息
+                            Swal.fire({
+                                icon: 'success',
+                                title: '此信箱已被註冊',
+                                text: '請確認您輸入的信箱是否正確',
+                                footer: ''
+                            });
+                        } 
+                        else if(response.data===-2)
+                        {
+                            Swal.fire({
+                                icon: 'fail',
+                                title: '請輸入信箱',
+                                text: '',
+                                footer: ''
+                            });
+
+                        }
+                        else {
+                            // 驗證碼已寄出，顯示提示訊息
+                            Swal.fire({
+                                icon: 'success',
+                                title: '驗證碼已寄出',
+                                text: '請在五分鐘之內進行註冊',
+                                footer: ''
+                            }).then(()=>{
+                                this.$router.push({ name: 'register' });
+                            })
+                        }
+                    } catch (error) {
+                        console.error(error);
+                    }
+                },
+
+            },
+        };
+
+        const RegisterComponent = {
+            template: `
+            <div class="row register__form">
+            <div class="col-lg-12">
+                <div class="login__form">
+                    <h3>註冊</h3>
+                            <form>
+                        <label>名稱：</label>
+                        <div class="input__item" :class="{ 'error': !isMemberNameValid }">
+                                    <input type="text" v-model="form.MemberName" name="MemberName" v-on:blur="validateMemberName"><br />
+                            <span class="icon_info"></span>
+                        </div>
+                                <div v-if="!isMemberNameValid" class="error-message" style="color: red;">
+                            請輸入至少兩個中文字或英文字
+                        </div>
+
+                        <label>密碼：</label>
+                        <div class="input__item" :class="{ 'error': !isPasswordValid }">
+                                    <input type="text" v-model="form.Password" name="Password" v-on:blur="validatePassword"><br />
+                            <span class="icon_lock"></span>
+                        </div>
+                                <div v-if="!isPasswordValid" class="error-message" style="color: red;">
+                            請輸入至少八位數並包含英數字
+                        </div>
+
+                        <label>手機：</label>
+                        <div class="input__item" :class="{ 'error': !isPhoneValid }">
+                                    <input type="text" v-model="form.Phone" name="Phone" v-on:blur="validatePhone"><br />
+                            <span class="icon_phone"></span>
+                        </div>
+                                <div v-if="!isPhoneValid" class="error-message" style="color: red;">
+                            請輸入十位數字且以09開頭
+                        </div>
+
+                        <label>驗證碼：</label>
+                        <div class="input__item">
+                            <input type="text" v-model="form.VerifyCode" name="VerifyCode">
+                            <span class="icon_box-checked"></span>
+                        </div>
+
+                        <button type="button" class="site-btn registration-btn" v-on:click="submit">註冊</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+                `,
+            data() {
+                return {
+                    form: {
+                        MemberName: '',
+                        Password: '',
+                        Phone: '',
+                        Email: '',
+                        VerifyCode: '',
+                    },
+                    
+                        isMemberNameValid: true,
+                        isPasswordValid: true,
+                        isPhoneValid: true,
+                    
+                };
+            },
+            methods: {
+                async submit() {
+                    try {
+                        const formData = new FormData();
+                        formData.append('MemberName', this.form.MemberName);
+                        formData.append('Password', this.form.Password);
+                        formData.append('Phone', this.form.Phone);
+                        formData.append('Email', this.form.Email);
+                        formData.append('VerifyCode', this.form.VerifyCode);
+                        
+                        const response = await axios.post('/Member/DoRegister', formData);
+                        // 檢查回應的結果
+                        if (response.data.success) {
+                            // 註冊成功
+                            Swal.fire({
+                                icon: 'success',
+                                title: '註冊成功',
+                                text: '將返回登入頁面',
+                                footer: ''
+                            });
+                            this.$router.push({ name: 'register' });
+                            // 動態生成絕對路徑
+                            const baseUrl = window.location.origin;
+                            const loginUrl = `${baseUrl}/Member/LoginCookieCheck`;
+                            window.location.href = loginUrl;
+
+                        }
+                        else if (response.data.somethingisnull){
+                            Swal.fire({
+                                icon: 'error',
+                                title: '有欄位未填，全部欄位皆必填',
+                                text: '',
+                                footer: ''
+                            });
+                        }
+                        else if (response.data.invalidpassword){
+                            Swal.fire({
+                                icon: 'error',
+                                title: '密碼需至少八位數，且包含英數字',
+                                text: '',
+                                footer: ''
+                            });
+                        }
+                        else if (response.data.invalidphone){
+                            Swal.fire({
+                                icon: 'error',
+                                title: '手機號需至少10位數，且為09開頭',
+                                text: '',
+                                footer: ''
+                            });
+
+                        } else if (response.data.NameorEmailExisted){
+                            Swal.fire({
+                                icon: 'error',
+                                title: '名字或Email已被註冊',
+                                text: '',
+                                footer: ''
+                            });
+
+                        } else if (response.data.verificationCodeisexpired){
+                            Swal.fire({
+                                icon: 'error',
+                                title: '驗證碼已過期',
+                                text: '',
+                                footer: ''
+                            });
+
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '註冊失敗',
+                                text: '請稍後再試，或聯繫客服',
+                                footer: ''
+                            });
+                        }
+                    } 
+                    catch (error) 
+                    {
+                        console.error(error);
+                    }
+                },
+                validateMemberName() {
+                    this.isMemberNameValid = /^[\u4e00-\u9fa5a-zA-Z]{3,}$/.test(this.form.MemberName);
+                },
+                validatePassword() {
+                    this.isPasswordValid = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/.test(this.form.Password);
+                },
+                validatePhone() {
+                    this.isPhoneValid = /^09\d{8}$/.test(this.form.Phone);
+                },
+            },
+        };
+
+        const router = VueRouter.createRouter({
+            history: VueRouter.createWebHashHistory(),
+            routes: [
+                {
+                    path: '/',
+                    component: EmailComponent,
+                    name: 'email',
+                },
+                {
+                    path: '/register',
+                    component: RegisterComponent,
+                    name: 'register',
+                },
+            ],
+        });
+
+        const {ref} = Vue
+        const app = Vue.createApp({
+            router, // 確保 Vue Router 正確註冊
+        });
+
+        // 在 app.component 中註冊元件
+        app.component('email-component', EmailComponent);
+        app.component('register-component', RegisterComponent);
+
+        // 最後掛載應用程式
+        Vue.createApp(app).use(router).mount('#app')
+    </script>
+}
+
+
+

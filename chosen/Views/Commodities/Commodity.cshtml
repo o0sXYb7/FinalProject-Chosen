@@ -1,0 +1,311 @@
+﻿@section Styles
+{
+    <link href="~/auction/css/auctioncentermain.css" rel="stylesheet" />
+    <link href="~/auction/css/auctioncentersidebar.css" rel="stylesheet" />
+    <link href="~/auction/css/commoditymain.css" rel="stylesheet" />
+    <style>
+
+    </style>
+}
+<div class="breadcrumb-option" id="app">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-wrapper">
+
+    <main class="main">
+
+        <div class="page-content">
+            <div class="container">
+                <div class="product-details-top">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="product-gallery product-gallery-vertical">
+                                <div class="row">
+                                    <figure class="product-main-image">
+                                        <img id="product-zoom" :src="'https://finalprojectbackend.azurewebsites.net/img/webDataPicture/' + this.PrizeItem.ShowRawardItemImage" alt="product image">
+
+                                        @*<a href="#" id="btn-product-gallery" class="btn-product-gallery">
+                                            <i class="icon-arrows"></i>
+                                        </a>*@
+                                    </figure><!-- End .product-main-image -->
+
+                                    @*<div id="product-zoom-gallery" class="product-image-gallery">
+                                        例圖
+                                    </div><!-- End .product-image-gallery -->*@
+                                </div><!-- End .row -->
+                            </div><!-- End .product-gallery -->
+                        </div><!-- End .col-md-6 -->
+
+                        <div class="col-md-8">
+                            <div class="product-details">
+                                <h1 class="product-title">{{PrizeItem.CommodityName}}</h1><!-- End .product-title -->
+                                                <span class="product-details-sapn product-details-sapn1">{{PrizeItem.FactoryName}}</span>
+                                                <span class="product-details-sapn product-details-sapn2">{{PrizeItem.Series}}</span>
+
+                                @*<div class="ratings-container">
+                                    <div class="ratings">
+                                        <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
+                                    </div><!-- End .ratings -->
+                                    <a class="ratings-text" href="#product-review-link" id="review-link">( 2 Reviews )</a>
+                                </div><!-- End .rating-container -->*@
+
+                                <div class="product-price">
+                                    NT${{PrizeItem.CommodityUnitPrice}}
+                                </div><!-- End .product-price -->
+
+                                <div class="product-content">
+                                    <label style="display: flex; justify-content: space-between; width:140px">
+                                        <span>運費</span>
+                                        <span style="text-align: right;">NT${{PrizeItem.Fare}}</span>
+                                    </label>
+                                </div><!-- End .product-content -->
+
+                                <div class="product-content">
+                                    <label style="display: flex; justify-content: space-between; width:140px">
+                                        <span>庫存</span>
+                                        <span style="text-align: right;">{{PrizeItem.CommodityQuantity}}</span>
+                                    </label>
+                                </div><!-- End .product-content -->
+
+                                <div class="details-filter-row details-row-size">
+                                    <label for="qty">數量</label>
+                                    @*<div class="product-details-quantity">
+                                        <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
+                                    </div><!-- End .product-details-quantity -->*@
+
+                                    <div class="input-count">
+                                        <div class="button-container btn-left">
+                                            <button class="button-count" @@click="quantity > 1 ? quantity-- : null">
+                                                <i class="fa-solid fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="input-field" :max="PrizeItem.CommodityQuantity" v-model="quantity">
+                                        <div class="button-container btn-right">
+                                             <button class="button-count" @@click="quantity < PrizeItem.CommodityQuantity ? quantity++ : null">
+                                                 <i class="fa-solid fa-plus"></i>
+                                             </button>
+                                        </div>
+                                    </div>
+                                </div><!-- End .details-filter-row -->
+
+                                <div class="product-details-action">
+                                   @* <a href="#" class="btn-product btn-cart"><span>購買</span></a>
+
+                                    <div class="details-action-wrapper">
+                                        <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>加入願望清單</span></a>
+                                    </div><!-- End .details-action-wrapper -->*@
+                                    <template v-if="PrizeItem.Seller != PrizeItem.Buyer">
+                                        <button class="buy-button square-button" @@click="buyPrizeItem">
+                                            <i class="fa-solid fa-cart-shopping"></i>購買
+                                        </button>
+                                    </template>
+                                    <template v-else="PrizeItem.Seller != PrizeItem.Buyer">
+                                        <button class="buy-button square-button btn-secondary disabled">
+                                            <i class="fa-solid fa-cart-shopping"></i>此為您販售的商品
+                                        </button>
+                                    </template>
+                                        
+                                        <button class="wishlist-button square-button">
+                                            <i class="fa-solid fa-star"></i>加入願望清單
+                                        </button>
+
+                                </div><!-- End .product-details-action -->
+
+                                <div class="product-details-footer">
+                                    <div class="product-cat">
+                                        <span>截止時間</span>
+                                        <a>{{ PrizeItem.Deadline ? PrizeItem.Deadline.slice(0, 10) : '' }}</a>
+                                        @*<a href="#">Dresses</a>,
+                                        <a href="#">Yellow</a>*@
+                                    </div><!-- End .product-cat -->
+
+                                    <div class="social-icons social-icons-sm">
+                                        <span class="social-label">@*Share:*@</span>
+                                                        <a  class="social-icon" title="Facebook" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+                                                        <a class="social-icon" title="Twitter" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                                                        <a class="social-icon" title="Instagram" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
+                                                        <a class="social-icon" title="Pinterest" target="_blank"><i class="fa-brands fa-pinterest"></i></a>
+                                    </div>
+                                </div><!-- End .product-details-footer -->
+                            </div><!-- End .product-details -->
+                        </div><!-- End .col-md-6 -->
+                    </div><!-- End .row -->
+                </div><!-- End .product-details-top -->
+
+                <hr class="rule-hr" />
+
+                <div class="rule-block">
+                    <h5>購買須知</h5>
+                    <div>
+                    <p>
+                        <i class="fa-solid fa-star"></i>【消費方式】 購買代幣>抽賞>申請出貨>等待收貨<br>
+                        <i class="fa-regular fa-star"></i>【商品系列】 抽取時請注意系列內容，有些系列為廠商自製賞<br>
+                        <i class="fa-solid fa-star"></i>【商品存放】 商品抽獎完成後，獎項會存放在個人的暫存倉庫，存放時間依該池提供的時間為準，若超過時間未領取，則商品會自動寄送，寄送地址以註冊內容為準<br>
+                        <i class="fa-regular fa-star"></i>【抽賞提示】 頁面跳轉時請勿重新整理，以及強制關閉頁面<br>
+                        <i class="fa-solid fa-star"></i>【購物貨運】 以每個獎池進行運費計算，抽取完的獎品將會儲存至暫存倉，如抽取間隔不超過該池的保存天數，則不另外計算運費<br>
+                        <i class="fa-regular fa-star"></i>【包套購買】 包套購買時請注意代幣是否充足，以免購買失敗<br>
+                        <i class="fa-solid fa-star"></i>【雙重中獎】 無二次中獎且不附籤紙<br>
+                        <i class="fa-regular fa-star"></i>【商品版本】 獎品版本依廠商提供為準，因此可能會有代理及日版差別<br>
+                        <i class="fa-solid fa-star"></i>【商品質量】 玩具為大量生產製造，全新商品不保證無原廠瑕疵，因運送過程有可能造成盒況損傷自行承擔風險<br>
+                        <i class="fa-regular fa-star"></i>【出貨地址】 商品出貨地址以個人填寫地址為準，請在抽取前確認地址正確性，若因地址填寫錯誤而導致商品遺失或二次運費的產生，本公司一概不負責<br>
+                        <i class="fa-solid fa-star"></i>【盒況說明】 商品在日方原廠出品、運送及海關檢驗時可能有盒損、原廠二次膠拆檢等狀況。若您對於盒況有相當高的要求，建議您不要購買<br>
+                        <i class="fa-regular fa-star"></i>【全新未拆】 全新未拆為商品本身未拆封過，不包含宣紙、運輸箱...等商品附加包材，若您對於運輸包材有特別要求，建議您不要購買<br>
+                        <i class="fa-solid fa-star"></i>【到貨開箱】 收到商品後請錄影開箱，若商品有明顯瑕疵，本公司會代為向商品提供方反應，但不保證商品提供方會處理<br>
+                        <i class="fa-regular fa-star"></i>【金流事項】 因應政府金融法規限制，短時間內頻繁刷卡可能視為風險帳戶而暫停刷卡功能，建議您一次購買足夠代幣
+                    </p>
+                </div>
+                </div>
+                
+
+            </div><!-- End .container -->
+        </div><!-- End .page-content -->
+    </main><!-- End .main -->
+
+</div><!-- End .page-wrapper -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>*@
+
+@section Scripts
+{
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    PrizeItem: [],
+                    quantity:null,
+                };
+            },
+            methods: {
+                GetPrizeItems() {
+                    let id = window.location.pathname.split('/').pop(); // 獲取 ID
+                    let _this = this;
+                    axios.get('/commodities/GetPrizeItems?id=' + id).then((response) => { // 將ID作為參數傳遞
+                        _this.PrizeItem = response.data;
+                    });
+                },
+                buyPrizeItem() {
+                    var check = ''
+                    const payload = {
+                        CommodityId: this.PrizeItem.CommodityId,
+                        Quantity: this.quantity
+                    };
+                    axios.post('/commodities/TradePreSteps', payload)
+                        .then(response => {
+                            if (response.data.SUCCESS === 5) {
+                                check = `您的一番賞倉庫中未含此獎池的一番賞，需支付運費NT$${this.PrizeItem.Fare}`;
+                            }
+                        })
+                        .then((res)=>{
+                            Swal.fire({
+                                title: '您確定要購買此商品?',
+                                text: check,
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d15b47',
+                                cancelButtonColor: '#abbac3',
+                                confirmButtonText: '確認',
+                                cancelButtonText: '取消',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    const payload = {
+                                        CommodityId: this.PrizeItem.CommodityId,
+                                        Quantity: this.quantity
+                                    };
+
+                                    axios.post('/commodities/CommodityTrade', payload)
+                                        .then(response => {
+                                            const { SUCCESS } = response.data;
+                                            if (SUCCESS === 1) {
+                                                // 处理成功响应 //購買成功
+                                                //console.log("Success: 1");
+                                                Swal.fire({
+                                                    title: `購買成功`,
+                                                    text: `現可至您的一番賞倉庫查看`,
+                                                    icon: 'success',
+                                                    //confirmButtonColor: '#d15b47',
+                                                    confirmButtonText: '確認'
+                                                })
+                                                .then((result) => {
+                                                        $.ajax({
+                                                            url: '/Payment/GetMemberData',
+                                                            type: 'GET',
+                                                            success: function (data) {
+                                                                $('#memberId').text(data.memberId);
+                                                                $('#memberPoint').text(data.memberPoint);
+                                                            },
+                                                            error: function (error) {
+                                                                console.error('發生錯誤:', error);
+                                                            }
+                                                        });
+                                                })
+
+                                            } else if (SUCCESS === 0) {
+                                                // 处理成功响应 //購買時發生錯誤
+                                                //console.log("Success: 0");
+                                                Swal.fire({
+                                                    title: `商品購買時發生錯誤`,
+                                                    text: `請洽客服中心，將有專人為您處理`,
+                                                    icon: 'error',
+                                                    //confirmButtonColor: '#d15b47',
+                                                    confirmButtonText: '確認'
+                                                })
+                                            } else if (SUCCESS === 2) {
+                                                // 处理成功响应 //買家點數不足
+                                                //console.log("Success: 2");
+                                                Swal.fire({
+                                                    title: `點數餘額不足`,
+                                                    icon: 'error',
+                                                    //confirmButtonColor: '#d15b47',
+                                                    confirmButtonText: '確認'
+                                                })
+                                            } else if (SUCCESS === 3) {
+                                                Swal.fire({
+                                                    title: `商品庫存不足`,
+                                                    icon: 'error',
+                                                    //confirmButtonColor: '#d15b47',
+                                                    confirmButtonText: '確認'
+                                                })
+                                            } else if (SUCCESS === 4) {
+                                                Swal.fire({
+                                                    title: `尚未登入!`,
+                                                    icon: 'error',
+                                                    //confirmButtonColor: '#d15b47',
+                                                    confirmButtonText: '確認'
+                                                })
+                                            } else {
+                                                // 处理其他情况 //購買時發生錯誤
+                                                //console.log("Unknown response");
+                                            }
+                                        })
+                                        .catch(error => {
+                                            // 处理错误
+                                            Swal.fire({
+                                                title: `購買失敗`,
+                                                text: `於購買時發生錯誤，請洽客服中心，將有專人為您處理`,
+                                                icon: 'error',
+                                                //confirmButtonColor: '#d15b47',
+                                                confirmButtonText: '確認'
+                                            })
+                                        });
+                                }
+                            });
+                        });
+
+
+                }
+
+            },
+            mounted() {
+                this.GetPrizeItems();
+                this.quantity = 1;
+            },
+        });
+
+        app.mount('#app');
+    </script>
+}
